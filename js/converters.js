@@ -256,7 +256,7 @@ window.ConverterEngine = (function () {
 
       ctx.fillStyle = "#0f172a";
       ctx.font = "bold 52px sans-serif";
-      ctx.fillText(`SwiftConvert Sample #${index}`, 145, 215);
+      ctx.fillText(`LeafConvert Sample #${index}`, 145, 215);
 
       ctx.fillStyle = "#e5322d";
       ctx.font = "bold 36px sans-serif";
@@ -364,9 +364,9 @@ window.ConverterEngine = (function () {
     }
 
     const singlePdf = await createSamplePdfFile("sample-3pages-brochure.pdf", [
-      { heading: "SwiftConvert Sample Page 1", sub: "High Resolution PDF Test Page", r: 0.98, g: 0.94, b: 0.94 },
-      { heading: "SwiftConvert Sample Page 2", sub: "Reorder, Delete, or Watermark", r: 0.93, g: 0.96, b: 1.0 },
-      { heading: "SwiftConvert Sample Page 3", sub: "100% Free Client-Side Engine", r: 0.93, g: 0.99, b: 0.95 }
+      { heading: "LeafConvert Sample Page 1", sub: "High Resolution PDF Test Page", r: 0.98, g: 0.94, b: 0.94 },
+      { heading: "LeafConvert Sample Page 2", sub: "Reorder, Delete, or Watermark", r: 0.93, g: 0.96, b: 1.0 },
+      { heading: "LeafConvert Sample Page 3", sub: "100% Free Client-Side Engine", r: 0.93, g: 0.99, b: 0.95 }
     ]);
     return [singlePdf];
   }

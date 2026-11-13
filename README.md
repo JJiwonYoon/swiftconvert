@@ -1,4 +1,4 @@
-# SwiftConvert — 서버/도메인 비용 0원 다국어 PDF·이미지 변환기 (15종 + SEO 전용 랜딩 페이지)
+# LeafConvert — 서버/도메인 비용 0원 다국어 PDF·이미지 변환기 (15종 + SEO 전용 랜딩 페이지)
 
 iLovePDF 스타일의 **100% 브라우저(Client-Side) 파일 변환 웹사이트**입니다.
 파일을 외부 서버로 전송하지 않고 사용자 브라우저 안에서 직접 변환하므로 **서버 유지비 0원**, **개인정보 유출 위험 0%**로 운영할 수 있습니다.
@@ -27,9 +27,9 @@ iLovePDF 스타일의 **100% 브라우저(Client-Side) 파일 변환 웹사이�
 ## 무료 도메인·호스팅(0원) 배포 및 검색(SEO) 등록 방법
 
 ### 1. 본인 배포 주소로 SEO 페이지/사이트맵 일괄 갱신
-Cloudflare Pages에서 발급받은 주소(예: `https://swiftconvert.pages.dev`)가 정해지면 아래 명령어 한 줄로 `sitemap.xml`, `robots.txt`, 15개 개별 도구 HTML의 `canonical` 및 구조화 데이터를 한 번에 갱신할 수 있습니다:
+Cloudflare Pages에서 발급받은 주소(`https://leafconvert.pages.dev`)가 정해지면 아래 명령어 한 줄로 `sitemap.xml`, `robots.txt`, 15개 개별 도구 HTML의 `canonical` 및 구조화 데이터를 한 번에 갱신할 수 있습니다:
 ```bash
-python3 scripts/build_seo_pages.py --domain https://내사이트.pages.dev
+python3 scripts/build_seo_pages.py --domain https://leafconvert.pages.dev
 ```
 
 ### 2. Cloudflare Pages 무료 배포 (상업적 광고 허용 + 트래픽 무제한)

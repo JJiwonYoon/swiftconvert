@@ -24,7 +24,7 @@ window.FEEDBACK_CONFIG = {
   commentProvider: "local",
 
   giscus: {
-    repo: "",               // 예: "username/swiftconvert-comments"
+    repo: "",               // 예: "username/leafconvert-comments"
     repoId: "",             // giscus.app 에서 발급받은 data-repo-id
     category: "Announcements",
     categoryId: "",         // giscus.app 에서 발급받은 data-category-id
@@ -38,7 +38,7 @@ window.FEEDBACK_CONFIG = {
   // 개발자 요청서 전달 채널 (설정 시 즉시 실전 전송 활성화)
   requestDelivery: {
     endpoint: "",           // 예: "https://formspree.io/f/xxxxxxxx" 또는 Google Apps Script / Cloudflare Worker URL
-    githubRepo: "",         // 예: "username/swiftconvert" -> "GitHub Issue로 보내기" 버튼 활성화
+    githubRepo: "",         // 예: "username/leafconvert" -> "GitHub Issue로 보내기" 버튼 활성화
     contactEmail: ""        // 예: "dev@example.com" -> "이메일로 보내기" 버튼 활성화
   },
 

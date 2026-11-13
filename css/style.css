@@ -593,6 +593,15 @@ button {
   align-items: start;
 }
 
+.workspace-grid.no-sidebar-ad {
+  grid-template-columns: minmax(0, 880px);
+  justify-content: center;
+}
+
+.workspace-grid.no-sidebar-ad aside {
+  display: none;
+}
+
 @media (max-width: 980px) {
   .workspace-grid {
     grid-template-columns: 1fr;

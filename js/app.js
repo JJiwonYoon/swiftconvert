@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * SwiftConvert 메인 애플리케이션 컨트롤러
+ * LeafConvert 메인 애플리케이션 컨트롤러
  * - 다국어(i18n) 전환, 실시간 도구 검색, 15종 변환 옵션 & 시각적 PDF 페이지 편집
  * - SEO 정적 랜딩 경로(/<tool-id>/) & SPA history.pushState 양방향 호환
  * - 광고 슬롯(AdSense / Kakao AdFit / 제휴 배너) 렌더링
@@ -41,7 +41,7 @@
     const qLang = params.get("lang");
     if (qLang && window.I18N[qLang]) return qLang;
 
-    const saved = localStorage.getItem("swiftconvert_lang");
+    const saved = localStorage.getItem("leafconvert_lang");
     if (saved && window.I18N[saved]) return saved;
 
     const navLang = (navigator.language || "ko").slice(0, 2).toLowerCase();
@@ -85,25 +85,43 @@
   function applyTheme(theme) {
     state.theme = theme;
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("swiftconvert_theme", theme);
+    localStorage.setItem("leafconvert_theme", theme);
     const btn = document.getElementById("themeToggleBtn");
     if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
     if (window.FeedbackModule) window.FeedbackModule.syncTheme(theme);
   }
 
+  function setAdContainerVisibility(el, visible) {
+    el.style.display = visible ? "" : "none";
+    const parent = el.parentElement;
+    if (!parent) return;
+    if (parent.classList.contains("ad-container") || parent.tagName === "ASIDE") {
+      parent.style.display = visible ? "" : "none";
+    }
+    if (parent.tagName === "ASIDE") {
+      const wsGrid = parent.closest(".workspace-grid");
+      if (wsGrid) wsGrid.classList.toggle("no-sidebar-ad", !visible);
+    }
+  }
+
   function renderAdSlots() {
     const cfg = window.ADS_CONFIG || { demoMode: true };
     const strings = t();
+    const host = (window.location && window.location.hostname) || "";
+    const proto = (window.location && window.location.protocol) || "";
+    const isLocalPreview = proto === "file:" || host === "localhost" || host === "127.0.0.1";
 
     document.querySelectorAll("[data-ad-slot]").forEach((el) => {
       const slotName = el.getAttribute("data-ad-slot");
       if (!cfg.demoMode && cfg.customBanners && cfg.customBanners.enabled && slotName === "conversionResult") {
+        setAdContainerVisibility(el, true);
         el.innerHTML = `<span class="ad-label">${strings.adLabel}</span>${cfg.customBanners.conversionResultHtml}`;
         return;
       }
 
-      if (!cfg.demoMode && cfg.adsense && cfg.adsense.enabled) {
-        const slotId = cfg.adsense.slots[slotName] || "";
+      if (!cfg.demoMode && cfg.adsense && cfg.adsense.enabled && cfg.adsense.slots && cfg.adsense.slots[slotName]) {
+        const slotId = cfg.adsense.slots[slotName];
+        setAdContainerVisibility(el, true);
         el.innerHTML = `
           <span class="ad-label">${strings.adLabel}</span>
           <ins class="adsbygoogle"
@@ -119,14 +137,15 @@
         return;
       }
 
-      if (!cfg.demoMode && cfg.kakaoAdFit && cfg.kakaoAdFit.enabled) {
-        const unitId = cfg.kakaoAdFit.units[slotName] || "";
+      if (!cfg.demoMode && cfg.kakaoAdFit && cfg.kakaoAdFit.enabled && cfg.kakaoAdFit.units && cfg.kakaoAdFit.units[slotName]) {
+        const unitId = cfg.kakaoAdFit.units[slotName];
         const isLeaderboard =
           slotName === "topLeaderboard" ||
           slotName === "bottomInfeed" ||
           slotName === "conversionResult";
         const width = isLeaderboard ? 728 : 300;
         const height = isLeaderboard ? 90 : 250;
+        setAdContainerVisibility(el, true);
         el.innerHTML = `
           <span class="ad-label">${strings.adLabel}</span>
           <ins class="kakao_ad_area" style="display:none;"
@@ -143,6 +162,13 @@
         return;
       }
 
+      if (!isLocalPreview) {
+        el.innerHTML = "";
+        setAdContainerVisibility(el, false);
+        return;
+      }
+
+      setAdContainerVisibility(el, true);
       el.innerHTML = `
         <span class="ad-label">${strings.adLabel}</span>
         <div class="ad-placeholder-content">
@@ -155,7 +181,7 @@
 
   function updateSeoAndGuide() {
     const s = t();
-    let title = `SwiftConvert - ${s.heroTitle}`;
+    let title = `LeafConvert - ${s.heroTitle}`;
     let desc = s.heroSubtitle;
     let keywords = "";
     let steps = s.howToSteps;
@@ -245,7 +271,6 @@
     setTxt("relatedSubtitle", s.relatedSubtitle);
     setTxt("howToTitle", s.howToTitle);
     setTxt("faqTitle", s.faqTitle);
-    setTxt("ownerGuideBtn", s.ownerGuideBtn);
     setTxt("licensesLink", s.licensesLink);
     setTxt("privacyLink", s.privacyLink);
     setTxt("termsLink", s.termsLink);
@@ -1080,7 +1105,7 @@
       zipBtn.textContent = `${s.downloadAllZip} (${results.length})`;
       zipBtn.onclick = async () => {
         const zipBlob = await window.ConverterEngine.createZipBlob(results);
-        triggerDownload(zipBlob, `swiftconvert_${state.activeToolId}_${results.length}files.zip`);
+        triggerDownload(zipBlob, `leafconvert_${state.activeToolId}_${results.length}files.zip`);
       };
     }
 
@@ -1134,7 +1159,7 @@
       langSelect.value = state.lang;
       langSelect.addEventListener("change", (e) => {
         state.lang = e.target.value;
-        localStorage.setItem("swiftconvert_lang", state.lang);
+        localStorage.setItem("leafconvert_lang", state.lang);
         updateStaticTexts();
         renderToolsGrid();
         if (state.activeToolId) {
@@ -1159,7 +1184,7 @@
       });
     }
 
-    const savedTheme = localStorage.getItem("swiftconvert_theme") || "light";
+    const savedTheme = localStorage.getItem("leafconvert_theme") || "light";
     applyTheme(savedTheme);
     document.getElementById("themeToggleBtn").addEventListener("click", () => {
       applyTheme(state.theme === "dark" ? "light" : "dark");
@@ -1280,41 +1305,12 @@
       if (e.target.id === "infoModal") closeModal();
     });
 
-    document.getElementById("ownerGuideBtn").addEventListener("click", () => {
-      openModal(
-        "💰 검색 상위 노출(SEO) 키워드 & 무료 배포 수익화 전략",
-        `
-        <div style="display:flex;flex-direction:column;gap:14px;font-size:0.9rem;line-height:1.65;">
-          <p><strong>1. 구글/네이버에 내 사이트가 잘 뜨게 하는 4가지 핵심</strong><br>
-          • <strong>도구별 독립 URL 구축 완료</strong>: <code>/pdf-to-jpg/</code>, <code>/compress-kb/</code>, <code>/heic-to-jpg/</code> 등 15개 개별 SEO 페이지와 JSON-LD 스키마가 자동 생성되어 검색봇이 각각 색인합니다.<br>
-          • <strong>Cloudflare Pages 무료 배포</strong> 후 <strong>Google Search Console</strong> &amp; <strong>네이버 서치어드바이저</strong>에 <code>sitemap.xml</code>을 반드시 제출하세요.</p>
-
-          <p><strong>2. 대형 사이트를 이기는 틈새(롱테일) 키워드 공략</strong><br>
-          • 'PDF 변환' 같은 1단어는 경쟁이 매우 치열하므로, <strong>구체적 목적 키워드</strong> 유입이 핵심입니다.<br>
-          • 국내 인기 틈새 키워드: <code>사진 용량 200kb 이하 줄이기</code>, <code>이력서 사진 용량 맞추기</code>, <code>아이폰 heic jpg 변환 윈도우</code>, <code>pdf 대외비 워터마크 넣기</code>, <code>카톡 캡처 세로 이어붙이기</code><br>
-          • 영문 고단가 키워드: <code>compress image to 200kb</code>, <code>delete pages from pdf free</code>, <code>heic to jpg no upload</code></p>
-
-          <p><strong>3. 백링크 &amp; 초기 유입 만들기 (비용 0원)</strong><br>
-          • 네이버 블로그·티스토리·레딧(Reddit)·클리앙·에펨코리아 등에 <em>"서버 전송 없이 브라우저에서만 안전하게 원서 사진 200KB 맞추는 법"</em> 같은 팁 글에 사이트 링크를 자연스럽게 달아두면 초기 색인과 검색 순위가 빠르게 올라갑니다.</p>
-
-          <p><strong>4. 수익화 연결 (<code>js/ads-config.js</code>)</strong><br>
-          • 무료 <code>*.pages.dev</code> 상태: 카카오 애드핏 + 쿠팡 파트너스(사무용품/노트북 등) 먼저 연결.<br>
-          • 일 방문자 300~500명 돌파 시 연 1만 원대 <code>.com</code> 도메인 연결 후 Google AdSense 전환.</p>
-
-          <p><strong>5. 공유 댓글창 · 개발자 요청서 실시간 수신 (<code>js/feedback-config.js</code>)</strong><br>
-          • <strong>공유 댓글창</strong>: <code>giscus.app/ko</code> 무료 연동 시 모든 방문자 간 댓글·반응 실시간 공유.<br>
-          • <strong>요청서 수신</strong>: Formspree / Google Apps Script / Discord Webhook URL을 넣으면 기능 요청이 실시간 전달됩니다.</p>
-        </div>
-        `
-      );
-    });
-
     document.getElementById("licensesLink").addEventListener("click", () => {
       openModal(
         t().licensesLink,
         `
         <div style="display:flex;flex-direction:column;gap:12px;font-size:0.88rem;line-height:1.6;">
-          <p>SwiftConvert runs 100% locally inside your browser using the following open-source libraries:</p>
+          <p>LeafConvert runs 100% locally inside your browser using the following open-source libraries:</p>
           <ul style="padding-left:18px;display:flex;flex-direction:column;gap:8px;">
             <li><strong>PDF.js (Mozilla)</strong> — Apache License 2.0
               (<a href="https://github.com/mozilla/pdf.js" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Source</a>)</li>

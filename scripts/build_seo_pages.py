@@ -195,7 +195,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--domain",
-        default="https://swiftconvert.wldnjs0487.workers.dev",
+        default="https://leafconvert.pages.dev",
         help="Site base URL",
     )
     args = parser.parse_args()

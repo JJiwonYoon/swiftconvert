@@ -354,7 +354,7 @@ window.TOOLS_CATALOG = [
 
 window.I18N = {
   ko: {
-    siteName: "SwiftConvert",
+    siteName: "LeafConvert",
     heroTitle: "필요한 모든 PDF · 이미지 변환을 한곳에서 무료로",
     heroSubtitle: "설치나 회원가입 없이 100% 무료로 이용하세요. 모든 파일은 서버로 전송되지 않고 사용자의 브라우저 안에서 즉시 처리되어 완벽하게 안전합니다.",
     trustBadge1: "🔒 100% 브라우저 직접 처리 (서버 전송 없음)",
@@ -464,15 +464,14 @@ window.I18N = {
     errorNoFiles: "변환할 파일을 먼저 선택해주세요.",
     downloadBtnText: "⬇ 다운로드",
     adLabel: "AD / 스폰서",
-    adPlaceholderTitle: "광고 수익 슬롯 영역",
-    adPlaceholderDesc: "js/ads-config.js에서 애드센스·카카오애드핏·쿠팡파트너스 코드를 설정하세요.",
-    ownerGuideBtn: "💰 SEO 키워드 & 무료 배포 가이드",
+    adPlaceholderTitle: "광고 영역 미리보기",
+    adPlaceholderDesc: "로컬 테스트 환경에서만 표시되는 광고 자리표시자입니다.",
     licensesLink: "오픈소스 라이선스",
     privacyLink: "개인정보처리방침",
     termsLink: "이용약관"
   },
   en: {
-    siteName: "SwiftConvert",
+    siteName: "LeafConvert",
     heroTitle: "Every PDF & Image Converter You Need — 100% Free",
     heroSubtitle: "Convert, merge, split, watermark, and compress files instantly with zero sign-up. All files are processed locally inside your browser and never uploaded to any server.",
     trustBadge1: "🔒 100% On-Device Processing (Files Never Leave Your Device)",
@@ -582,15 +581,14 @@ window.I18N = {
     errorNoFiles: "Please select at least one file first.",
     downloadBtnText: "⬇ Download",
     adLabel: "Sponsored",
-    adPlaceholderTitle: "Monetization Ad Slot",
-    adPlaceholderDesc: "Configure Google AdSense, AdFit, or Affiliate code in js/ads-config.js.",
-    ownerGuideBtn: "💰 SEO & Free Hosting Guide",
+    adPlaceholderTitle: "Ad Slot Preview",
+    adPlaceholderDesc: "Developer preview placeholder shown only on localhost.",
     licensesLink: "Open Source Licenses",
     privacyLink: "Privacy Policy",
     termsLink: "Terms of Service"
   },
   ja: {
-    siteName: "SwiftConvert",
+    siteName: "LeafConvert",
     heroTitle: "すべてのPDF・画像変換ツールを1か所で完全無料に",
     heroSubtitle: "登録不要・インストール不要。ファイルはサーバーに送信されず、お使いのブラウザ内で直接処理されるため、機密文書も100%安全です。",
     trustBadge1: "🔒 100%ブラウザ内処理（サーバー送信なし）",
@@ -700,15 +698,14 @@ window.I18N = {
     errorNoFiles: "変換するファイルを先に選択してください。",
     downloadBtnText: "⬇ ダウンロード",
     adLabel: "広告 / スポンサー",
-    adPlaceholderTitle: "広告収益スロット",
-    adPlaceholderDesc: "js/ads-config.js で AdSense やアフィリエイトコードを設定できます。",
-    ownerGuideBtn: "💰 SEO＆無料公開ガイド",
+    adPlaceholderTitle: "広告枠プレビュー",
+    adPlaceholderDesc: "ローカル確認環境でのみ表示されるプレースホルダーです。",
     licensesLink: "オープンソースライセンス",
     privacyLink: "プライバシーポリシー",
     termsLink: "利用規約"
   },
   es: {
-    siteName: "SwiftConvert",
+    siteName: "LeafConvert",
     heroTitle: "Todas las Herramientas para Convertir PDF e Imágenes — 100% Gratis",
     heroSubtitle: "Convierte, une, divide, añade marcas de agua y comprime archivos al instante sin registro. Tus archivos se procesan localmente en tu navegador y nunca se suben a ningún servidor.",
     trustBadge1: "🔒 Procesamiento 100% Local (Máxima Privacidad)",
@@ -818,9 +815,8 @@ window.I18N = {
     errorNoFiles: "Por favor selecciona al menos un archivo.",
     downloadBtnText: "⬇ Descargar",
     adLabel: "Publicidad",
-    adPlaceholderTitle: "Espacio Publicitario",
-    adPlaceholderDesc: "Configura AdSense o banners de afiliados en js/ads-config.js.",
-    ownerGuideBtn: "💰 Guía SEO y Hosting Gratis",
+    adPlaceholderTitle: "Vista Previa de Anuncio",
+    adPlaceholderDesc: "Marcador visible solo en entorno local de prueba.",
     licensesLink: "Licencias Open Source",
     privacyLink: "Política de Privacidad",
     termsLink: "Términos de Uso"

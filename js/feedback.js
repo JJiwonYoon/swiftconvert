@@ -1,18 +1,18 @@
 /**
  * ============================================================================
- * SwiftConvert 댓글창 · 개발자 요청서 · 실시간 채팅 도우미 모듈
+ * LeafConvert 댓글창 · 개발자 요청서 · 실시간 채팅 도우미 모듈
  * - 다국어(ko / en / ja / es) 및 다크/라이트 테마 완벽 동기화
- * - 0원 정적 호스팅 호환 (로컬 미리보기 + Giscus/Webhook/GitHub/이메일/Crisp/Tawk 옵션 연동)
+ * - 정적 호스팅 호환 (로컬 저장 + Giscus/Webhook/GitHub/이메일/Crisp/Tawk 옵션 연동)
  * ============================================================================
  */
 (function () {
   const STORAGE_KEYS = {
-    comments: "swiftconvert_comments_v1",
-    likes: "swiftconvert_comment_likes_v1",
-    requests: "swiftconvert_requests_v1",
-    chat: "swiftconvert_chat_history_v1",
-    nick: "swiftconvert_comment_nick_v1",
-    token: "swiftconvert_user_token_v1"
+    comments: "leafconvert_comments_v1",
+    likes: "leafconvert_comment_likes_v1",
+    requests: "leafconvert_requests_v1",
+    chat: "leafconvert_chat_history_v1",
+    nick: "leafconvert_comment_nick_v1",
+    token: "leafconvert_user_token_v1"
   };
 
   const VALID_ID_RE = /^[a-z0-9-]+$/i;
@@ -24,11 +24,10 @@
       sectionSubtitle: "사용 후기, 궁금한 점, 필요한 새 변환 기능이나 오류를 자유롭게 남겨주세요.",
       tabComments: "💬 댓글창",
       tabRequest: "🛠️ 개발자 요청서",
-      localModeBadge: "로컬 미리보기 모드",
-      localModeDesc: "작성한 댓글·요청은 이 브라우저에 저장됩니다. 모든 방문자가 함께 보는 공유 댓글창·실시간 수신을 켜려면 아래 설정 가이드를 확인하세요.",
-      giscusModeBadge: "실시간 공유 댓글 (Giscus)",
-      giscusModeDesc: "GitHub Discussions와 연동되어 모든 방문자가 댓글과 반응을 실시간으로 공유합니다.",
-      setupGuideBtn: "연동 방법 보기 (무료)",
+      localModeBadge: "💬 내 브라우저 저장",
+      localModeDesc: "작성하신 댓글과 기능 요청은 현재 기기의 브라우저에 안전하게 저장됩니다.",
+      giscusModeBadge: "💬 실시간 공유 댓글",
+      giscusModeDesc: "모든 방문자와 댓글·반응을 실시간으로 함께 공유할 수 있습니다.",
       nickLabel: "닉네임",
       nickPlaceholder: "익명 (선택)",
       commentTypeLabel: "말머리",
@@ -88,20 +87,20 @@
       reqListTitle: "내가 작성한 개발자 요청서 내역",
       reqEmptyDesc: "아직 제출한 요청서가 없습니다. 위 양식을 작성해 필요한 기능을 알려주세요!",
       reqStatusSent: "개발자 전송 완료 ✅",
-      reqStatusLocal: "로컬 접수 · 복사/직접 전달 가능 📋",
+      reqStatusLocal: "접수 완료 · 복사/직접 전달 가능 📋",
       reqCopyBtn: "📋 요청서 복사",
       reqGithubBtn: "🐙 GitHub Issue로 보내기",
       reqEmailBtn: "✉️ 이메일로 보내기",
       reqValidationError: "요청 제목과 상세 설명을 모두 입력해주세요.",
       reqSubmittedSent: "✅ 개발자 요청서가 성공적으로 전송되었습니다!",
-      reqSubmittedLocal: "📋 요청서가 작성되었습니다! 설정된 서버가 없어 로컬 내역에 저장되었으며, 복사·전달 버튼으로 바로 보낼 수 있습니다.",
+      reqSubmittedLocal: "📋 요청서가 저장되었습니다! 아래 복사·전달 버튼을 통해 바로 전달하실 수 있습니다.",
       reqTicketCopied: "✅ 요청서 양식이 클립보드에 복사되었습니다!",
       toastCommentPosted: "✅ 댓글이 등록되었습니다!",
       toastCommentDeleted: "🗑️ 삭제되었습니다.",
       toastReplyPosted: "✅ 답글이 등록되었습니다!",
       toastCommentValidation: "댓글 내용을 입력해주세요.",
       chatFabLabel: "채팅 · 개발자 요청",
-      chatTitle: "SwiftConvert 도우미",
+      chatTitle: "LeafConvert 도우미",
       chatSubtitle: "도구 찾기 · 사용법 · 개발자 기능 요청",
       chatOpenReqBtn: "📋 요청서",
       chatClearBtn: "초기화",
@@ -120,7 +119,7 @@
       chatGoCommentsBtn: "💬 댓글창으로 이동",
       chatToolMatchPrefix: "찾으시는 작업에 딱 맞는 도구를 발견했어요! 아래 버튼을 누르면 바로 열립니다:",
       chatNoMatchText: "현재 15종 도구 목록에서는 정확한 일치 항목을 찾지 못했습니다. 원하시는 새 기능이나 오류 문의라면 바로 개발자 요청서로 남겨주시겠어요?",
-      chatPrivacyReply: "SwiftConvert의 모든 변환은 외부 서버로 파일을 보내지 않고 고객님의 브라우저 메모리 안에서만 100% 처리됩니다. 따라서 보안·유출 걱정 없이 안전하게 무료로 이용하실 수 있습니다.",
+      chatPrivacyReply: "LeafConvert의 모든 변환은 외부 서버로 파일을 보내지 않고 고객님의 브라우저 메모리 안에서만 100% 처리됩니다. 따라서 보안·유출 걱정 없이 안전하게 무료로 이용하실 수 있습니다.",
       chatKbReply: "이력서·관공서용 100KB / 200KB / 500KB 이하 압축은 [목표 용량(KB) 딱 맞춰 압축] 도구에서 클릭 한 번으로 자동 맞춤할 수 있습니다.",
       chatHeicReply: "아이폰 사진(.HEIC/.HEIF)을 윈도우나 웹사이트 업로드용 JPG/PNG로 바꾸려면 [HEIC 사진 JPG 변환] 도구를 사용하세요.",
       chatLiveAgentBtn: "🧑‍💻 실시간 상담 위젯 열기",
@@ -132,11 +131,10 @@
       sectionSubtitle: "Share feedback, ask questions, or request new converters and bug fixes directly.",
       tabComments: "💬 Comments",
       tabRequest: "🛠️ Feature Request",
-      localModeBadge: "Browser Preview Mode",
-      localModeDesc: "Saved locally in this browser. Connect free Giscus (GitHub Discussions) or a Webhook in js/feedback-config.js to share across all visitors.",
-      giscusModeBadge: "Live Shared Comments (Giscus)",
-      giscusModeDesc: "Powered by GitHub Discussions so every visitor shares comments and reactions live.",
-      setupGuideBtn: "Free Setup Guide",
+      localModeBadge: "💬 Saved in Your Browser",
+      localModeDesc: "Comments and feature requests are stored safely in your browser on this device.",
+      giscusModeBadge: "💬 Live Community Comments",
+      giscusModeDesc: "Share comments and reactions live with other visitors.",
       nickLabel: "Nickname",
       nickPlaceholder: "Guest (optional)",
       commentTypeLabel: "Tag",
@@ -196,20 +194,20 @@
       reqListTitle: "Your Submitted Requests",
       reqEmptyDesc: "No feature requests submitted yet. Use the form above to send one!",
       reqStatusSent: "Delivered to Developer ✅",
-      reqStatusLocal: "Saved Locally · Ready to Copy/Send 📋",
+      reqStatusLocal: "Saved · Ready to Copy/Send 📋",
       reqCopyBtn: "📋 Copy Request",
       reqGithubBtn: "🐙 Open GitHub Issue",
       reqEmailBtn: "✉️ Send via Email",
       reqValidationError: "Please fill in both the request title and details.",
       reqSubmittedSent: "✅ Your developer request has been delivered!",
-      reqSubmittedLocal: "📋 Request created! Stored locally (no endpoint set) — use Copy/GitHub/Email actions to forward.",
+      reqSubmittedLocal: "📋 Request saved! Use the Copy, GitHub, or Email actions below to send it.",
       reqTicketCopied: "✅ Formatted request copied to clipboard!",
       toastCommentPosted: "✅ Comment posted!",
       toastCommentDeleted: "🗑️ Deleted.",
       toastReplyPosted: "✅ Reply posted!",
       toastCommentValidation: "Please write a comment before posting.",
       chatFabLabel: "Chat · Request",
-      chatTitle: "SwiftConvert Assistant",
+      chatTitle: "LeafConvert Assistant",
       chatSubtitle: "Find tools · Help · Developer Request",
       chatOpenReqBtn: "📋 Request",
       chatClearBtn: "Reset",
@@ -228,7 +226,7 @@
       chatGoCommentsBtn: "💬 Go to Comments",
       chatToolMatchPrefix: "Here are the matching tools — click one to open it immediately:",
       chatNoMatchText: "I didn't find an exact built-in tool for that query. Would you like to send it as a Developer Feature Request?",
-      chatPrivacyReply: "All SwiftConvert tools process files 100% inside your own browser memory. Nothing is ever uploaded or stored on external servers.",
+      chatPrivacyReply: "All LeafConvert tools process files 100% inside your own browser memory. Nothing is ever uploaded or stored on external servers.",
       chatKbReply: "Use [Compress Image to Exact KB] to automatically fit photos under 100KB, 200KB, or 500KB for applications.",
       chatHeicReply: "Use [HEIC to JPG] to convert iPhone .HEIC photos to standard JPG or PNG in seconds.",
       chatLiveAgentBtn: "🧑‍💻 Open Live Support Widget",
@@ -240,11 +238,10 @@
       sectionSubtitle: "ご感想、ご質問、追加してほしい変換ツールや不具合報告をお気軽にお寄せください。",
       tabComments: "💬 コメント",
       tabRequest: "🛠️ 開発者リクエスト",
-      localModeBadge: "ブラウザプレビューモード",
-      localModeDesc: "現在はご利用中のブラウザに保存されます。全訪問者と共有するコメント欄を有効にするには js/feedback-config.js で無料の Giscus または Webhook を設定してください。",
-      giscusModeBadge: "共有コメント連携中 (Giscus)",
-      giscusModeDesc: "GitHub Discussions 経由で全ユーザーとリアルタイムにコメント・リアクションを共有します。",
-      setupGuideBtn: "無料設定ガイド",
+      localModeBadge: "💬 ブラウザ保存",
+      localModeDesc: "入力したコメントや機能リクエストは、お使いのブラウザ内に安全に保存されます。",
+      giscusModeBadge: "💬 共有コメント",
+      giscusModeDesc: "他の訪問者とリアルタイムにコメントやリアクションを共有できます。",
       nickLabel: "ニックネーム",
       nickPlaceholder: "匿名 (任意)",
       commentTypeLabel: "カテゴリ",
@@ -304,20 +301,20 @@
       reqListTitle: "送信したリクエスト履歴",
       reqEmptyDesc: "まだリクエスト履歴はありません。上のフォームから送信できます！",
       reqStatusSent: "開発者へ送信済み ✅",
-      reqStatusLocal: "ローカル保存済み・コピー可能 📋",
+      reqStatusLocal: "保存済み · コピー/送信可能 📋",
       reqCopyBtn: "📋 内容をコピー",
       reqGithubBtn: "🐙 GitHub Issue で送る",
       reqEmailBtn: "✉️ メールで送る",
       reqValidationError: "件名と詳細の両方を入力してください。",
       reqSubmittedSent: "✅ 開発者リクエストを送信しました！",
-      reqSubmittedLocal: "📋 リクエストを保存しました！Webhook未設定のため、コピーまたはGitHub/メールボタンから送信できます。",
+      reqSubmittedLocal: "📋 リクエストを保存しました！下のコピー・GitHub・メールボタンから送信できます。",
       reqTicketCopied: "✅ リクエスト内容をクリップボードにコピーしました！",
       toastCommentPosted: "✅ コメントを投稿しました！",
       toastCommentDeleted: "🗑️ 削除しました。",
       toastReplyPosted: "✅ 返信を投稿しました！",
       toastCommentValidation: "コメント本文を入力してください。",
       chatFabLabel: "チャット・機能要望",
-      chatTitle: "SwiftConvert アシスタント",
+      chatTitle: "LeafConvert アシスタント",
       chatSubtitle: "ツール案内・開発者リクエスト",
       chatOpenReqBtn: "📋 要望書",
       chatClearBtn: "リセット",
@@ -336,7 +333,7 @@
       chatGoCommentsBtn: "💬 コメント欄へ",
       chatToolMatchPrefix: "ご希望に合うツールが見つかりました。クリックですぐ開けます：",
       chatNoMatchText: "該当する既存ツールが見つかりませんでした。開発者リクエストとして送信しますか？",
-      chatPrivacyReply: "SwiftConvertの変換はすべてお使いのブラウザ内で完結し、外部サーバーへファイルが送信されることは一切ありません。",
+      chatPrivacyReply: "LeafConvertの変換はすべてお使いのブラウザ内で完結し、外部サーバーへファイルが送信されることは一切ありません。",
       chatKbReply: "[目標容量(KB)指定圧縮] を使えば、100KB・200KB・500KB以下に自動調整できます。",
       chatHeicReply: "iPhoneのHEIC写真をJPG/PNGに変換するには [HEIC JPG変換] をお使いください。",
       chatLiveAgentBtn: "🧑‍💻 ライブサポートを開く",
@@ -348,11 +345,10 @@
       sectionSubtitle: "Comparte tu opinión, haz preguntas o pide nuevas herramientas y correcciones.",
       tabComments: "💬 Comentarios",
       tabRequest: "🛠️ Solicitud al Dev",
-      localModeBadge: "Modo Vista Previa Local",
-      localModeDesc: "Guardado en tu navegador. Activa Giscus (GitHub) o un Webhook gratuito en js/feedback-config.js para compartir entre todos los visitantes.",
-      giscusModeBadge: "Comentarios Compartidos (Giscus)",
-      giscusModeDesc: "Conectado a GitHub Discussions para compartir comentarios en tiempo real.",
-      setupGuideBtn: "Guía de Configuración Gratis",
+      localModeBadge: "💬 Guardado en tu Navegador",
+      localModeDesc: "Tus comentarios y solicitudes se guardan de forma segura en este navegador.",
+      giscusModeBadge: "💬 Comentarios Compartidos",
+      giscusModeDesc: "Comparte comentarios y reacciones en tiempo real con otros visitantes.",
       nickLabel: "Nombre",
       nickPlaceholder: "Anónimo (opcional)",
       commentTypeLabel: "Etiqueta",
@@ -412,20 +408,20 @@
       reqListTitle: "Tus Solicitudes Enviadas",
       reqEmptyDesc: "Aún no has enviado solicitudes. Completa el formulario de arriba.",
       reqStatusSent: "Enviado al Desarrollador ✅",
-      reqStatusLocal: "Guardado Localmente · Listo para Copiar 📋",
+      reqStatusLocal: "Guardado · Listo para Enviar 📋",
       reqCopyBtn: "📋 Copiar Solicitud",
       reqGithubBtn: "🐙 Abrir Issue en GitHub",
       reqEmailBtn: "✉️ Enviar por Email",
       reqValidationError: "Por favor completa el título y los detalles.",
       reqSubmittedSent: "✅ ¡Tu solicitud fue enviada al desarrollador!",
-      reqSubmittedLocal: "📋 ¡Solicitud guardada localmente! Usa Copiar, GitHub o Email para enviarla.",
+      reqSubmittedLocal: "📋 ¡Solicitud guardada! Usa los botones de Copiar, GitHub o Email para enviarla.",
       reqTicketCopied: "✅ ¡Solicitud copiada al portapapeles!",
       toastCommentPosted: "✅ ¡Comentario publicado!",
       toastCommentDeleted: "🗑️ Eliminado.",
       toastReplyPosted: "✅ ¡Respuesta publicada!",
       toastCommentValidation: "Por favor escribe un comentario.",
       chatFabLabel: "Chat · Solicitar",
-      chatTitle: "Asistente SwiftConvert",
+      chatTitle: "Asistente LeafConvert",
       chatSubtitle: "Ayuda · Buscar herramienta · Solicitud",
       chatOpenReqBtn: "📋 Solicitud",
       chatClearBtn: "Reiniciar",
@@ -581,28 +577,6 @@
     if (fbState.deps && typeof fbState.deps.onShowToast === "function") {
       fbState.deps.onShowToast(msg);
     }
-  }
-
-  function openSetupGuideModal() {
-    if (!fbState.deps || typeof fbState.deps.onOpenModal !== "function") return;
-    fbState.deps.onOpenModal(
-      "💬 0원 공유 댓글창 & 개발자 요청서 실시간 연동 가이드",
-      `
-      <div style="display:flex;flex-direction:column;gap:14px;font-size:0.9rem;line-height:1.65;">
-        <p><strong>1. 모든 방문자가 함께 보는 공유 댓글창 켜기 (완전 무료 · Giscus)</strong><br>
-        • 공개 GitHub 저장소 생성 → <code>Settings → Discussions</code> 활성화.<br>
-        • <a href="https://giscus.app/ko" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">giscus.app/ko</a> 에서 저장소를 입력해 <code>repoId</code>, <code>categoryId</code> 발급.<br>
-        • <code>js/feedback-config.js</code> 에서 <code>commentProvider: "giscus"</code> 및 ID 입력!</p>
-
-        <p><strong>2. 개발자 요청서 실시간 수신 (무료 플랜)</strong><br>
-        • <a href="https://formspree.io" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Formspree</a>, Google Apps Script 웹앱, Cloudflare Worker 또는 Discord Webhook URL을 <code>js/feedback-config.js</code>의 <code>requestDelivery.endpoint</code>에 붙여넣으면 요청서 제출 즉시 실시간 알림이 도착합니다.<br>
-        • 또는 <code>githubRepo: "아이디/저장소"</code> / <code>contactEmail</code>을 넣으면 원클릭 GitHub Issue · 이메일 버튼이 자동 활성화됩니다.</p>
-
-        <p><strong>3. 운영자 실시간 1:1 채팅 상담 연결 (선택)</strong><br>
-        • 무료 플랜을 제공하는 <a href="https://www.tawk.to" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Tawk.to</a> 또는 <a href="https://crisp.chat" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Crisp</a> ID를 <code>liveChat</code>에 입력하면 내장 도우미에서 1:1 채팅창으로 바로 연결할 수 있습니다.</p>
-      </div>
-      `
-    );
   }
 
   function getCommentTypeMeta(type) {
@@ -786,7 +760,7 @@
 
   function buildRequestPlainText(ticket) {
     const lines = [
-      `[SwiftConvert Developer Request #${ticket.id}]`,
+      `[LeafConvert Developer Request #${ticket.id}]`,
       `• Type: ${ticket.categoryLabel}`,
       `• Priority: ${ticket.priorityLabel}`,
       `• Tool: ${ticket.toolLabel}`,
@@ -810,7 +784,7 @@
   function buildMailtoUrl(email, ticket) {
     const clean = String(email || "").trim();
     if (!clean || !clean.includes("@")) return "";
-    const subject = encodeURIComponent(`[SwiftConvert #${ticket.id}] ${ticket.title}`);
+    const subject = encodeURIComponent(`[LeafConvert #${ticket.id}] ${ticket.title}`);
     const body = encodeURIComponent(buildRequestPlainText(ticket));
     return `mailto:${clean}?subject=${subject}&body=${body}`;
   }
@@ -1121,7 +1095,6 @@
         <div class="fb-mode-banner">
           <span class="fb-mode-pill">${escapeHtml(modeBadge)}</span>
           <span class="fb-mode-text">${escapeHtml(modeDesc)}</span>
-          <button type="button" class="fb-setup-btn" id="fbSetupGuideBtn">${escapeHtml(s.setupGuideBtn)}</button>
         </div>
 
         <div class="fb-panel-body">
@@ -1146,9 +1119,6 @@
         renderCommunitySection();
       });
     });
-
-    const setupBtn = document.getElementById("fbSetupGuideBtn");
-    if (setupBtn) setupBtn.addEventListener("click", openSetupGuideModal);
 
     // Comments tab handlers
     container.querySelectorAll("[data-comment-type]").forEach((btn) => {

@@ -2,7 +2,7 @@ window.TOOLS_SEO = {
   "pdf-to-jpg": {
     "related": ["pdf-to-png", "jpg-to-pdf", "compress-kb", "organize-pdf"],
     "ko": {
-      "seoTitle": "PDF JPG 변환 무료 사이트 - 고화질 이미지 추출 및 ZIP 저장 | SwiftConvert",
+      "seoTitle": "PDF JPG 변환 무료 사이트 - 고화질 이미지 추출 및 ZIP 저장 | LeafConvert",
       "seoDesc": "PDF 파일을 고화질 JPG 이미지로 1초 만에 무료 변환하세요. 서버 업로드 없이 브라우저에서 안전하게 처리되며 여러 페이지도 ZIP으로 한 번에 저장됩니다.",
       "keywords": "PDF JPG 변환, PDF 이미지 변환, PDF 사진으로 저장, PDF 그림파일 변환, PDF 고화질 추출, 무료 PDF 변환 사이트",
       "steps": [
@@ -16,7 +16,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "PDF to JPG Converter Free Online - High Quality & Private | SwiftConvert",
+      "seoTitle": "PDF to JPG Converter Free Online - High Quality & Private | LeafConvert",
       "seoDesc": "Convert PDF pages to crisp JPG images free inside your browser. Zero server uploads, unlimited pages, and instant ZIP download.",
       "keywords": "PDF to JPG, convert PDF to image, extract images from PDF, high resolution PDF to JPEG, free online PDF converter",
       "steps": [
@@ -30,7 +30,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF JPG 変換 無料・登録不要 - 高画質画像化＆一括ZIP保存 | SwiftConvert",
+      "seoTitle": "PDF JPG 変換 無料・登録不要 - 高画質画像化＆一括ZIP保存 | LeafConvert",
       "seoDesc": "PDFの各ページを高画質なJPG画像へブラウザ内で無料変換。サーバー送信なしで安全、複数ページもZIPでまとめてダウンロードできます。",
       "keywords": "PDF JPG 変換, PDF 画像化, PDF JPEG 変換 無料, PDF 写真 保存",
       "steps": [
@@ -43,7 +43,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Convertir PDF a JPG Gratis Online - Alta Calidad | SwiftConvert",
+      "seoTitle": "Convertir PDF a JPG Gratis Online - Alta Calidad | LeafConvert",
       "seoDesc": "Convierte páginas PDF a imágenes JPG de alta calidad gratis y sin subir archivos a servidores.",
       "keywords": "PDF a JPG, convertir PDF a imagen gratis, extraer páginas PDF",
       "steps": [
@@ -59,7 +59,7 @@ window.TOOLS_SEO = {
   "jpg-to-pdf": {
     "related": ["merge-pdf", "stitch-images", "compress-kb", "page-numbers-pdf"],
     "ko": {
-      "seoTitle": "JPG PDF 변환 무료 - 여러 장 사진 순서대로 PDF 합치기 | SwiftConvert",
+      "seoTitle": "JPG PDF 변환 무료 - 여러 장 사진 순서대로 PDF 합치기 | LeafConvert",
       "seoDesc": "여러 장의 JPG, PNG, WebP 이미지를 원하는 순서대로 정렬해 깔끔한 하나의 PDF 파일로 합치세요. A4 크기 맞춤, 여백 조절 지원.",
       "keywords": "JPG PDF 변환, 사진 PDF 변환, 이미지 PDF 합치기, PNG PDF 변환, 모바일 사진 PDF 만들기, 무료 이미지 PDF 변환",
       "steps": [
@@ -73,7 +73,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "JPG to PDF Converter Free - Combine Images to PDF Online | SwiftConvert",
+      "seoTitle": "JPG to PDF Converter Free - Combine Images to PDF Online | LeafConvert",
       "seoDesc": "Merge multiple JPG, PNG, and WebP photos into a single PDF document in seconds. Reorder pages, set A4 size and margins locally.",
       "keywords": "JPG to PDF, PNG to PDF, images to PDF, combine photos into PDF, free JPG to PDF",
       "steps": [
@@ -86,7 +86,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "JPG PDF 変換 無料 - 複数画像を1つのPDFに結合 | SwiftConvert",
+      "seoTitle": "JPG PDF 変換 無料 - 複数画像を1つのPDFに結合 | LeafConvert",
       "seoDesc": "JPG・PNG・WebP画像を好きな順番に並べて1つのPDFファイルに変換。A4サイズや余白も自由に設定可能。",
       "keywords": "JPG PDF 変換, 画像 PDF まとめ, PNG PDF 変換, 写真 PDF化",
       "steps": [
@@ -99,7 +99,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Convertir JPG a PDF Gratis - Unir Fotos en un PDF | SwiftConvert",
+      "seoTitle": "Convertir JPG a PDF Gratis - Unir Fotos en un PDF | LeafConvert",
       "seoDesc": "Convierte y combina varias imágenes JPG, PNG o WebP en un solo archivo PDF ordenado.",
       "keywords": "JPG a PDF, imágenes a PDF, unir fotos en PDF gratis",
       "steps": [
@@ -115,7 +115,7 @@ window.TOOLS_SEO = {
   "merge-pdf": {
     "related": ["organize-pdf", "split-pdf", "page-numbers-pdf", "watermark-pdf"],
     "ko": {
-      "seoTitle": "PDF 합치기 무료 사이트 - 프로그램 설치 없이 PDF 병합 | SwiftConvert",
+      "seoTitle": "PDF 합치기 무료 사이트 - 프로그램 설치 없이 PDF 병합 | LeafConvert",
       "seoDesc": "여러 개의 PDF 문서를 원하는 순서로 빠르고 안전하게 하나로 합치세요. 100% 브라우저 내 처리로 기밀 문서도 유출 걱정 없이 병합합니다.",
       "keywords": "PDF 합치기, PDF 병합 무료, PDF 파일 하나로 합치기, 무설치 PDF 합치기, 보안 PDF 병합",
       "steps": [
@@ -129,7 +129,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Merge PDF Files Online Free - Private & Unlimited | SwiftConvert",
+      "seoTitle": "Merge PDF Files Online Free - Private & Unlimited | LeafConvert",
       "seoDesc": "Combine multiple PDF files into one document in any order without uploading to external servers. Fast, unlimited, and 100% private.",
       "keywords": "Merge PDF, combine PDF files free, join PDF online, secure PDF merger",
       "steps": [
@@ -142,7 +142,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF 結合 無料 - ソフト不要・安全に複数PDFを1つに | SwiftConvert",
+      "seoTitle": "PDF 結合 無料 - ソフト不要・安全に複数PDFを1つに | LeafConvert",
       "seoDesc": "複数のPDFファイルを好きな順番で1つのPDFに無料結合。サーバーへ送信せずブラウザ内で完結するため安全です。",
       "keywords": "PDF 結合, PDF まとめ 無料, PDF 連結 ブラウザ",
       "steps": [
@@ -155,7 +155,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Unir PDF Gratis Online - Combinar Archivos PDF sin Subirlos | SwiftConvert",
+      "seoTitle": "Unir PDF Gratis Online - Combinar Archivos PDF sin Subirlos | LeafConvert",
       "seoDesc": "Combina varios documentos PDF en un único archivo ordenado de forma rápida y privada.",
       "keywords": "Unir PDF, combinar PDF gratis, juntar archivos PDF",
       "steps": [
@@ -171,7 +171,7 @@ window.TOOLS_SEO = {
   "split-pdf": {
     "related": ["organize-pdf", "merge-pdf", "pdf-to-jpg", "rotate-pdf"],
     "ko": {
-      "seoTitle": "PDF 나누기 및 페이지 추출 무료 - 원하는 페이지만 분리 저장 | SwiftConvert",
+      "seoTitle": "PDF 나누기 및 페이지 추출 무료 - 원하는 페이지만 분리 저장 | LeafConvert",
       "seoDesc": "PDF에서 필요한 페이지(예: 1-3, 5)만 쏙 골라내거나 모든 페이지를 개별 PDF 파일로 나누세요. 설치 없는 무료 PDF 분할 도구.",
       "keywords": "PDF 나누기, PDF 분할 무료, PDF 페이지 추출, PDF 쪼개기, PDF 특정 페이지 저장",
       "steps": [
@@ -184,7 +184,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Split PDF Online Free - Extract Specific PDF Pages | SwiftConvert",
+      "seoTitle": "Split PDF Online Free - Extract Specific PDF Pages | LeafConvert",
       "seoDesc": "Split a PDF into individual pages or extract custom page ranges like 1-3, 5 locally inside your browser.",
       "keywords": "Split PDF, extract PDF pages, separate PDF pages free",
       "steps": [
@@ -197,7 +197,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF 分割・ページ抽出 無料 - 必要なページだけを保存 | SwiftConvert",
+      "seoTitle": "PDF 分割・ページ抽出 無料 - 必要なページだけを保存 | LeafConvert",
       "seoDesc": "PDFを全ページ個別に分割、または指定範囲(1-3, 5)だけを抽出して無料保存できます。",
       "keywords": "PDF 分割, PDF 抽出 無料, PDF ページ 抜き出し",
       "steps": [
@@ -210,7 +210,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Dividir PDF Gratis - Extraer Páginas de un PDF | SwiftConvert",
+      "seoTitle": "Dividir PDF Gratis - Extraer Páginas de un PDF | LeafConvert",
       "seoDesc": "Divide cada página de un PDF o extrae un rango específico de páginas gratis y sin esperas.",
       "keywords": "Dividir PDF, extraer páginas PDF, separar PDF gratis",
       "steps": [
@@ -226,7 +226,7 @@ window.TOOLS_SEO = {
   "organize-pdf": {
     "related": ["split-pdf", "merge-pdf", "rotate-pdf", "page-numbers-pdf"],
     "ko": {
-      "seoTitle": "PDF 페이지 삭제 및 순서 바꾸기 - 화면 보면서 바로 편집 | SwiftConvert",
+      "seoTitle": "PDF 페이지 삭제 및 순서 바꾸기 - 화면 보면서 바로 편집 | LeafConvert",
       "seoDesc": "PDF 각 페이지 미리보기를 보면서 불필요한 페이지를 삭제하고, 마우스 클릭으로 페이지 순서를 바꾸거나 개별 회전한 뒤 새 PDF로 저장하세요.",
       "keywords": "PDF 페이지 삭제, PDF 순서 변경, PDF 페이지 편집 무료, PDF 특정 페이지 지우기, PDF 페이지 정리",
       "steps": [
@@ -240,7 +240,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Organize PDF Pages Free - Delete, Reorder & Rotate Visually | SwiftConvert",
+      "seoTitle": "Organize PDF Pages Free - Delete, Reorder & Rotate Visually | LeafConvert",
       "seoDesc": "Visually preview every PDF page, delete unwanted pages, reorder sequences, or rotate individual pages right in your browser.",
       "keywords": "organize PDF, delete PDF pages, reorder PDF pages, remove pages from PDF free",
       "steps": [
@@ -253,7 +253,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF ページ削除・並び替え 無料 - プレビューしながら簡単編集 | SwiftConvert",
+      "seoTitle": "PDF ページ削除・並び替え 無料 - プレビューしながら簡単編集 | LeafConvert",
       "seoDesc": "PDFの各ページをプレビューしながら不要ページ削除、順番変更、個別回転ができる無料ブラウザツール。",
       "keywords": "PDF ページ 削除, PDF 順番 入れ替え, PDF 並び替え 無料",
       "steps": [
@@ -266,7 +266,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Organizar Páginas PDF Gratis - Eliminar y Reordenar | SwiftConvert",
+      "seoTitle": "Organizar Páginas PDF Gratis - Eliminar y Reordenar | LeafConvert",
       "seoDesc": "Visualiza las páginas de tu PDF para eliminar, reordenar o rotar páginas individuales fácilmente.",
       "keywords": "Organizar PDF, eliminar páginas PDF, reordenar PDF gratis",
       "steps": [
@@ -282,7 +282,7 @@ window.TOOLS_SEO = {
   "rotate-pdf": {
     "related": ["organize-pdf", "merge-pdf", "split-pdf", "pdf-to-jpg"],
     "ko": {
-      "seoTitle": "PDF 회전 무료 저장 - 옆으로 누운 PDF 90도 180도 바로 세우기 | SwiftConvert",
+      "seoTitle": "PDF 회전 무료 저장 - 옆으로 누운 PDF 90도 180도 바로 세우기 | LeafConvert",
       "seoDesc": "스캔할 때 거꾸로 되거나 가로로 누워버린 PDF 문서를 90도, 180도, 270도로 회전해 영구 저장하세요.",
       "keywords": "PDF 회전, PDF 방향 바꾸기, PDF 90도 회전 저장, 누운 PDF 세우기, PDF 거꾸로 회전",
       "steps": [
@@ -295,7 +295,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Rotate PDF Permanently Free Online - 90°, 180°, 270° | SwiftConvert",
+      "seoTitle": "Rotate PDF Permanently Free Online - 90°, 180°, 270° | LeafConvert",
       "seoDesc": "Fix upside-down or sideways scanned PDFs and permanently save the rotated pages locally.",
       "keywords": "Rotate PDF, flip PDF permanently, rotate PDF 90 degrees free",
       "steps": [
@@ -308,7 +308,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF 回転 無料 - 横向き・逆さまPDFを90度/180度回転して保存 | SwiftConvert",
+      "seoTitle": "PDF 回転 無料 - 横向き・逆さまPDFを90度/180度回転して保存 | LeafConvert",
       "seoDesc": "横向きや上下逆さまのPDFページを90°・180°・270°回転して永久保存できます。",
       "keywords": "PDF 回転 保存, PDF 向き 変更 無料",
       "steps": [
@@ -321,7 +321,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Rotar PDF Gratis Online - Girar Páginas 90°, 180° o 270° | SwiftConvert",
+      "seoTitle": "Rotar PDF Gratis Online - Girar Páginas 90°, 180° o 270° | LeafConvert",
       "seoDesc": "Gira páginas PDF torcidas o al revés y guarda el nuevo ángulo de forma permanente.",
       "keywords": "Rotar PDF, girar PDF gratis, enderezar PDF",
       "steps": [
@@ -337,7 +337,7 @@ window.TOOLS_SEO = {
   "watermark-pdf": {
     "related": ["page-numbers-pdf", "merge-pdf", "organize-pdf", "pdf-to-jpg"],
     "ko": {
-      "seoTitle": "PDF 워터마크 넣기 무료 - 한글 대외비·사본·보안 문구 삽입 | SwiftConvert",
+      "seoTitle": "PDF 워터마크 넣기 무료 - 한글 대외비·사본·보안 문구 삽입 | LeafConvert",
       "seoDesc": "계약서, 이력서, 제출용 PDF에 '사본', '대외비', '제출용' 등 한글·영문 워터마크를 무료로 넣으세요. 대각선 중앙 및 바둑판 전체 반복 지원.",
       "keywords": "PDF 워터마크 넣기, PDF 대외비 넣기, PDF 사본 표시, PDF 도장 텍스트 삽입, 무료 PDF 워터마크",
       "steps": [
@@ -350,7 +350,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Add Watermark to PDF Free Online - Diagonal & Tiled Text | SwiftConvert",
+      "seoTitle": "Add Watermark to PDF Free Online - Diagonal & Tiled Text | LeafConvert",
       "seoDesc": "Stamp custom CONFIDENTIAL or DRAFT watermarks onto every PDF page with adjustable opacity, color, and diagonal or tiled layout.",
       "keywords": "PDF watermark, add watermark to PDF free, stamp CONFIDENTIAL on PDF",
       "steps": [
@@ -363,7 +363,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF 透かし(ウォーターマーク)挿入 無料 - 「社外秘」「コピー」入れ | SwiftConvert",
+      "seoTitle": "PDF 透かし(ウォーターマーク)挿入 無料 - 「社外秘」「コピー」入れ | LeafConvert",
       "seoDesc": "PDFの全ページに「社外秘」「CONFIDENTIAL」などの日本語・英語透かし文字を無料挿入できます。",
       "keywords": "PDF 透かし 無料, PDF ウォーターマーク, PDF 社外秘 入れる",
       "steps": [
@@ -376,7 +376,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Poner Marca de Agua a PDF Gratis Online | SwiftConvert",
+      "seoTitle": "Poner Marca de Agua a PDF Gratis Online | LeafConvert",
       "seoDesc": "Añade marcas de agua personalizadas como CONFIDENCIAL o COPIA en todas las páginas de tu PDF.",
       "keywords": "Marca de agua PDF, añadir texto confidencial PDF gratis",
       "steps": [
@@ -392,7 +392,7 @@ window.TOOLS_SEO = {
   "page-numbers-pdf": {
     "related": ["merge-pdf", "watermark-pdf", "organize-pdf", "split-pdf"],
     "ko": {
-      "seoTitle": "PDF 페이지 번호 넣기 무료 - 1/10, 하단 가운데 번호 매기기 | SwiftConvert",
+      "seoTitle": "PDF 페이지 번호 넣기 무료 - 1/10, 하단 가운데 번호 매기기 | LeafConvert",
       "seoDesc": "보고서, 논문, 병합한 PDF 문서에 깔끔한 페이지 번호(1, 1/10, - 1 -)를 자동으로 삽입하세요. 위치와 시작 번호 지정 가능.",
       "keywords": "PDF 페이지 번호 넣기, PDF 쪽번호 매기기, PDF 페이지 넘버링 무료, PDF 하단 번호 추가",
       "steps": [
@@ -405,7 +405,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Add Page Numbers to PDF Free Online - Custom Position & Format | SwiftConvert",
+      "seoTitle": "Add Page Numbers to PDF Free Online - Custom Position & Format | LeafConvert",
       "seoDesc": "Insert crisp vector page numbers (1, 1 / N, Page 1) onto every PDF page at bottom center, left, or right.",
       "keywords": "Add page numbers to PDF, PDF page numbering free, number PDF pages",
       "steps": [
@@ -418,7 +418,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF ページ番号 挿入 無料 - フッター位置や開始番号を自由設定 | SwiftConvert",
+      "seoTitle": "PDF ページ番号 挿入 無料 - フッター位置や開始番号を自由設定 | LeafConvert",
       "seoDesc": "結合したPDFや資料にページ番号（1、1 / 10、- 1 -）を自動で追加できます。",
       "keywords": "PDF ページ番号, PDF ノンブル 追加 無料",
       "steps": [
@@ -431,7 +431,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Añadir Números de Página a PDF Gratis Online | SwiftConvert",
+      "seoTitle": "Añadir Números de Página a PDF Gratis Online | LeafConvert",
       "seoDesc": "Inserta numeración automática (1, 1 / N, - 1 -) en todas las páginas de tu PDF.",
       "keywords": "Numerar páginas PDF, añadir números de página PDF gratis",
       "steps": [
@@ -447,7 +447,7 @@ window.TOOLS_SEO = {
   "pdf-to-png": {
     "related": ["pdf-to-jpg", "webp-to-jpg", "compress-image", "organize-pdf"],
     "ko": {
-      "seoTitle": "PDF PNG 변환 무료 - 글자 깨짐 없는 무손실 고화질 이미지 변환 | SwiftConvert",
+      "seoTitle": "PDF PNG 변환 무료 - 글자 깨짐 없는 무손실 고화질 이미지 변환 | LeafConvert",
       "seoDesc": "PDF 문서의 표, 도표, 작은 텍스트를 손실 압축 노이즈 없이 선명한 PNG 이미지로 변환하세요.",
       "keywords": "PDF PNG 변환, PDF 고화질 이미지 저장, PDF 무손실 변환 무료",
       "steps": [
@@ -460,7 +460,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "PDF to PNG Converter Free - Lossless Crisp Page Extraction | SwiftConvert",
+      "seoTitle": "PDF to PNG Converter Free - Lossless Crisp Page Extraction | LeafConvert",
       "seoDesc": "Convert PDF pages into lossless PNG images with razor-sharp text and diagrams.",
       "keywords": "PDF to PNG, lossless PDF to image, convert PDF to PNG free",
       "steps": [
@@ -473,7 +473,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "PDF PNG 変換 無料 - 文字が滲まない高画質・可逆圧縮 | SwiftConvert",
+      "seoTitle": "PDF PNG 変換 無料 - 文字が滲まない高画質・可逆圧縮 | LeafConvert",
       "seoDesc": "PDFの図表や細かい文字を劣化のない鮮明なPNG画像に変換して保存できます。",
       "keywords": "PDF PNG 変換, PDF 高画質 画像 無料",
       "steps": [
@@ -486,7 +486,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Convertir PDF a PNG Gratis - Imágenes Sin Pérdida | SwiftConvert",
+      "seoTitle": "Convertir PDF a PNG Gratis - Imágenes Sin Pérdida | LeafConvert",
       "seoDesc": "Transforma páginas de PDF en imágenes PNG nítidas sin pérdida de calidad.",
       "keywords": "PDF a PNG, convertir PDF sin pérdida",
       "steps": [
@@ -502,7 +502,7 @@ window.TOOLS_SEO = {
   "compress-image": {
     "related": ["compress-kb", "resize-image", "webp-to-jpg", "heic-to-jpg"],
     "ko": {
-      "seoTitle": "이미지 용량 줄이기 무료 - 화질 유지하며 사진 크기 최대 80% 압축 | SwiftConvert",
+      "seoTitle": "이미지 용량 줄이기 무료 - 화질 유지하며 사진 크기 최대 80% 압축 | LeafConvert",
       "seoDesc": "블로그, 쇼핑몰, 웹사이트 업로드용 JPG·PNG·WebP 이미지 파일 용량을 화질 저하 없이 빠르게 압축하세요. 여러 장 일괄 압축 지원.",
       "keywords": "이미지 용량 줄이기, 사진 용량 줄이기, 사진 압축 사이트, JPG 용량 줄이기, 블로그 사진 압축",
       "steps": [
@@ -515,7 +515,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Compress Image Online Free - Reduce JPG, PNG & WebP Size | SwiftConvert",
+      "seoTitle": "Compress Image Online Free - Reduce JPG, PNG & WebP Size | LeafConvert",
       "seoDesc": "Shrink image file sizes by up to 80% while preserving visual clarity. Batch compress locally in your browser.",
       "keywords": "Compress image, reduce photo file size, JPG compressor free",
       "steps": [
@@ -528,7 +528,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "画像圧縮 無料 - 画質を保って写真容量を最大80%削減 | SwiftConvert",
+      "seoTitle": "画像圧縮 無料 - 画質を保って写真容量を最大80%削減 | LeafConvert",
       "seoDesc": "JPG・PNG・WebP画像の容量をブラウザ上で一括軽量化できます。",
       "keywords": "画像 圧縮 無料, 写真 容量 減らす, JPG 軽量化",
       "steps": [
@@ -541,7 +541,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Comprimir Imágenes Online Gratis - Reducir Peso Sin Perder Calidad | SwiftConvert",
+      "seoTitle": "Comprimir Imágenes Online Gratis - Reducir Peso Sin Perder Calidad | LeafConvert",
       "seoDesc": "Reduce el peso de tus fotos JPG, PNG y WebP por lotes gratis en tu navegador.",
       "keywords": "Comprimir imagen, reducir peso foto gratis",
       "steps": [
@@ -557,7 +557,7 @@ window.TOOLS_SEO = {
   "compress-kb": {
     "related": ["compress-image", "resize-image", "jpg-to-pdf", "heic-to-jpg"],
     "ko": {
-      "seoTitle": "사진 용량 200KB · 500KB 이하 딱 맞춰 줄이기 (이력서·원서·비자 제출용) | SwiftConvert",
+      "seoTitle": "사진 용량 200KB · 500KB 이하 딱 맞춰 줄이기 (이력서·원서·비자 제출용) | LeafConvert",
       "seoDesc": "관공서, 입사지원, 대학 원서, 비자 신청 시 걸리는 '200KB 이하', '500KB 이하' 용량 제한에 자동으로 딱 맞게 이미지를 압축해 드립니다.",
       "keywords": "이미지 200KB 이하 줄이기, 사진 용량 500KB 맞추기, 증명사진 용량 줄이기, 이력서 사진 용량, 원서 접수 사진 압축, KB 단위 압축",
       "steps": [
@@ -570,7 +570,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Compress Image to Target KB (100KB, 200KB, 500KB) Free | SwiftConvert",
+      "seoTitle": "Compress Image to Target KB (100KB, 200KB, 500KB) Free | LeafConvert",
       "seoDesc": "Automatically shrink photos to fit strict 100KB, 200KB, or 500KB limits for visa applications, job portals, and government forms.",
       "keywords": "Compress image to 200KB, reduce photo to 100KB, resize image to exact KB, visa photo compressor",
       "steps": [
@@ -583,7 +583,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "画像 指定サイズ(200KB・500KB以下)に自動圧縮 無料 | SwiftConvert",
+      "seoTitle": "画像 指定サイズ(200KB・500KB以下)に自動圧縮 無料 | LeafConvert",
       "seoDesc": "履歴書・ビザ申請・Webフォームの「200KB以下」「500KB以下」制限に合わせて自動で最適圧縮します。",
       "keywords": "画像 200KB以下 圧縮, 写真 500KB 以内, サイズ指定 画像圧縮",
       "steps": [
@@ -596,7 +596,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Comprimir Imagen a Tamaño Exacto en KB (100KB, 200KB, 500KB) | SwiftConvert",
+      "seoTitle": "Comprimir Imagen a Tamaño Exacto en KB (100KB, 200KB, 500KB) | LeafConvert",
       "seoDesc": "Ajusta tus fotos automáticamente por debajo de 100KB, 200KB o 500KB para trámites y portales.",
       "keywords": "Comprimir imagen a 200KB, reducir foto a KB exactos",
       "steps": [
@@ -612,7 +612,7 @@ window.TOOLS_SEO = {
   "webp-to-jpg": {
     "related": ["heic-to-jpg", "compress-image", "jpg-to-pdf", "resize-image"],
     "ko": {
-      "seoTitle": "WebP JPG 변환 · PNG 변환 무료 - 웹이미지 호환 포맷 일괄 변경 | SwiftConvert",
+      "seoTitle": "WebP JPG 변환 · PNG 변환 무료 - 웹이미지 호환 포맷 일괄 변경 | LeafConvert",
       "seoDesc": "웹에서 저장한 WebP 파일이 한글/PPT/포토샵에서 안 열릴 때? JPG 또는 PNG로 1초 만에 일괄 변환하세요.",
       "keywords": "WebP JPG 변환, WebP PNG 변환, PNG JPG 변환, SVG PNG 변환, 이미지 확장자 변환 무료",
       "steps": [
@@ -625,7 +625,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "WebP to JPG & PNG Converter Free Online - Batch Format Switcher | SwiftConvert",
+      "seoTitle": "WebP to JPG & PNG Converter Free Online - Batch Format Switcher | LeafConvert",
       "seoDesc": "Batch convert WebP, PNG, SVG, or GIF files into universal JPG, PNG, or WebP images locally.",
       "keywords": "WebP to JPG, WebP to PNG, PNG to JPG, batch image format converter",
       "steps": [
@@ -638,7 +638,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "WebP JPG / PNG 変換 無料 - 一括フォーマット変換 | SwiftConvert",
+      "seoTitle": "WebP JPG / PNG 変換 無料 - 一括フォーマット変換 | LeafConvert",
       "seoDesc": "WebP・PNG・SVG画像を汎用的なJPGやPNG、軽量WebPへブラウザ内で一括変換します。",
       "keywords": "WebP JPG 変換, WebP PNG 変換, 画像拡張子 変換 無料",
       "steps": [
@@ -651,7 +651,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Convertir WebP a JPG o PNG Gratis Online | SwiftConvert",
+      "seoTitle": "Convertir WebP a JPG o PNG Gratis Online | LeafConvert",
       "seoDesc": "Convierte imágenes WebP, PNG o SVG a JPG, PNG o WebP por lotes al instante.",
       "keywords": "WebP a JPG, WebP a PNG, conversor de imágenes gratis",
       "steps": [
@@ -667,7 +667,7 @@ window.TOOLS_SEO = {
   "heic-to-jpg": {
     "related": ["webp-to-jpg", "compress-kb", "jpg-to-pdf", "stitch-images"],
     "ko": {
-      "seoTitle": "아이폰 HEIC JPG 변환 무료 - 윈도우에서 안 열리는 사진 즉시 변환 | SwiftConvert",
+      "seoTitle": "아이폰 HEIC JPG 변환 무료 - 윈도우에서 안 열리는 사진 즉시 변환 | LeafConvert",
       "seoDesc": "아이폰에서 옮긴 HEIC, HEIF 사진이 윈도우 PC나 관공서 웹사이트에서 열리지 않을 때 표준 JPG 또는 PNG로 무료 변환하세요.",
       "keywords": "HEIC JPG 변환, 아이폰 사진 JPG 변환, HEIC 파일 열기, HEIF JPG 변환, 윈도우 HEIC 변환 무료",
       "steps": [
@@ -680,7 +680,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "HEIC to JPG Converter Free Online - Open iPhone Photos Anywhere | SwiftConvert",
+      "seoTitle": "HEIC to JPG Converter Free Online - Open iPhone Photos Anywhere | LeafConvert",
       "seoDesc": "Convert iPhone HEIC and HEIF photos into standard JPG or PNG files privately inside your browser.",
       "keywords": "HEIC to JPG, iPhone photo converter, HEIF to JPEG free",
       "steps": [
@@ -693,7 +693,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "HEIC JPG 変換 無料 - iPhone写真(HEIC)をWindows対応JPGへ | SwiftConvert",
+      "seoTitle": "HEIC JPG 変換 無料 - iPhone写真(HEIC)をWindows対応JPGへ | LeafConvert",
       "seoDesc": "PCで開けないiPhoneのHEIC/HEIF写真を標準のJPG・PNGにブラウザ内で安全に変換します。",
       "keywords": "HEIC JPG 変換, iPhone 写真 変換 無料, HEIF JPG",
       "steps": [
@@ -706,7 +706,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Convertir HEIC a JPG Gratis - Fotos de iPhone a JPG | SwiftConvert",
+      "seoTitle": "Convertir HEIC a JPG Gratis - Fotos de iPhone a JPG | LeafConvert",
       "seoDesc": "Convierte fotos HEIC de iPhone a JPG o PNG estándar sin subirlas a ningún servidor.",
       "keywords": "HEIC a JPG, convertir fotos iPhone gratis",
       "steps": [
@@ -722,7 +722,7 @@ window.TOOLS_SEO = {
   "resize-image": {
     "related": ["compress-image", "compress-kb", "stitch-images", "webp-to-jpg"],
     "ko": {
-      "seoTitle": "이미지 크기 조절 무료 - 사진 가로/세로 픽셀(px) 일괄 리사이징 | SwiftConvert",
+      "seoTitle": "이미지 크기 조절 무료 - 사진 가로/세로 픽셀(px) 일괄 리사이징 | LeafConvert",
       "seoDesc": "여러 장의 이미지 해상도 크기를 원하는 가로 픽셀(px)이나 프리셋(여권/유튜브 썸네일/SNS)에 맞춰 일괄 조절하세요.",
       "keywords": "이미지 크기 조절, 사진 픽셀 줄이기, 이미지 리사이즈 무료, 사진 해상도 변경, 여러장 크기 한꺼번에 변경",
       "steps": [
@@ -735,7 +735,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Resize Image Online Free - Batch Pixel Resizer | SwiftConvert",
+      "seoTitle": "Resize Image Online Free - Batch Pixel Resizer | LeafConvert",
       "seoDesc": "Resize multiple JPG, PNG, and WebP images proportionally by exact pixel width in seconds.",
       "keywords": "Resize image, change image dimensions, batch image resizer free",
       "steps": [
@@ -748,7 +748,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "画像リサイズ 無料 - 横幅ピクセル指定で一括サイズ変更 | SwiftConvert",
+      "seoTitle": "画像リサイズ 無料 - 横幅ピクセル指定で一括サイズ変更 | LeafConvert",
       "seoDesc": "複数画像のサイズを縦横比を保ったまま指定ピクセル幅へ一括変更できます。",
       "keywords": "画像 リサイズ 無料, 写真 サイズ変更 ピクセル",
       "steps": [
@@ -761,7 +761,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Redimensionar Imagen Gratis Online - Cambiar Tamaño en Píxeles | SwiftConvert",
+      "seoTitle": "Redimensionar Imagen Gratis Online - Cambiar Tamaño en Píxeles | LeafConvert",
       "seoDesc": "Cambia el ancho en píxeles de varias imágenes manteniendo la proporción original.",
       "keywords": "Redimensionar imagen, cambiar tamaño foto píxeles gratis",
       "steps": [
@@ -777,7 +777,7 @@ window.TOOLS_SEO = {
   "stitch-images": {
     "related": ["jpg-to-pdf", "compress-image", "resize-image", "webp-to-jpg"],
     "ko": {
-      "seoTitle": "이미지 이어붙이기 무료 - 사진 세로/가로 합치기 (카톡 캡처·영수증 병합) | SwiftConvert",
+      "seoTitle": "이미지 이어붙이기 무료 - 사진 세로/가로 합치기 (카톡 캡처·영수증 병합) | LeafConvert",
       "seoDesc": "여러 장의 스크린샷, 카톡 대화 캡처, 영수증, 비교 사진을 세로나 가로 방향으로 깔끔하게 1장의 이미지로 이어붙이세요.",
       "keywords": "이미지 이어붙이기, 사진 합치기 사이트, 세로 사진 합치기, 가로 사진 합치기, 카톡 캡처 이어붙이기, 이미지 병합 무료",
       "steps": [
@@ -790,7 +790,7 @@ window.TOOLS_SEO = {
       ]
     },
     "en": {
-      "seoTitle": "Stitch Images Together Free - Merge Photos Vertically or Horizontally | SwiftConvert",
+      "seoTitle": "Stitch Images Together Free - Merge Photos Vertically or Horizontally | LeafConvert",
       "seoDesc": "Combine multiple screenshots or photos into one vertical strip or horizontal collage with custom spacing.",
       "keywords": "Stitch images, combine photos vertically, merge screenshots into one image free",
       "steps": [
@@ -803,7 +803,7 @@ window.TOOLS_SEO = {
       ]
     },
     "ja": {
-      "seoTitle": "画像 縦・横 結合 無料 - スクリーンショットや写真を1枚につなげる | SwiftConvert",
+      "seoTitle": "画像 縦・横 結合 無料 - スクリーンショットや写真を1枚につなげる | LeafConvert",
       "seoDesc": "複数のスクリーンショットや比較写真を縦方向または横方向に1枚の画像としてつなげられます。",
       "keywords": "画像 つなげる 無料, スクリーンショット 縦 結合, 写真 並べる",
       "steps": [
@@ -816,7 +816,7 @@ window.TOOLS_SEO = {
       ]
     },
     "es": {
-      "seoTitle": "Unir Imágenes Gratis - Juntar Fotos en Vertical u Horizontal | SwiftConvert",
+      "seoTitle": "Unir Imágenes Gratis - Juntar Fotos en Vertical u Horizontal | LeafConvert",
       "seoDesc": "Une varias capturas o fotos en una sola imagen continua vertical u horizontal con márgenes ajustables.",
       "keywords": "Unir imágenes, juntar fotos vertical gratis",
       "steps": [
