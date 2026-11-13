@@ -1,0 +1,13 @@
+# IDE / Editor (blocks large VS Code C++ database e.g. .vscode/browse.vc.db)
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*~

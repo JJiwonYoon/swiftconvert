@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF 회전 무료 저장 - 옆으로 누운 PDF 90도 180도 바로 세우기 | SwiftConvert</title>
+  <meta name="description" content="스캔할 때 거꾸로 되거나 가로로 누워버린 PDF 문서를 90도, 180도, 270도로 회전해 영구 저장하세요." />
+  <meta name="keywords" content="PDF 회전, PDF 방향 바꾸기, PDF 90도 회전 저장, 누운 PDF 세우기, PDF 거꾸로 회전" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <link rel="canonical" href="https://your-site.pages.dev/rotate-pdf/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SwiftConvert" />
+  <meta property="og:title" content="PDF 회전 무료 저장 - 옆으로 누운 PDF 90도 180도 바로 세우기 | SwiftConvert" />
+  <meta property="og:description" content="스캔할 때 거꾸로 되거나 가로로 누워버린 PDF 문서를 90도, 180도, 270도로 회전해 영구 저장하세요." />
+  <link rel="stylesheet" href="../css/style.css?v=8fa02376" />
+
+  <!-- 구조화 데이터 (Google 검색 리치 스니펫용 JSON-LD) -->
+  <script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF 회전 무료 저장 - 옆으로 누운 PDF 90도 180도 바로 세우기",
+    "url": "https://your-site.pages.dev/rotate-pdf/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "스캔할 때 거꾸로 되거나 가로로 누워버린 PDF 문서를 90도, 180도, 270도로 회전해 영구 저장하세요."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "PDF 뷰어에서 회전하면 닫았다 열 때 원래대로 돌아가는데 여기는 영구 저장되나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "네, PDF 내부 페이지 메타데이터 자체를 수정해 새 파일로 생성하므로 어느 기기에서 열어도 회전된 상태로 유지됩니다."
+        }
+      }
+    ]
+  }
+]
+  </script>
+
+  <!-- 클라이언트 사이드 PDF/ZIP/HEIC 변환 라이브러리 (무료 CDN) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script defer src="https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js"></script>
+
+  <!-- Google AdSense 사용 시 본인 클라이언트 ID로 교체 후 주석 해제 -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000" crossorigin="anonymous"></script> -->
+</head>
+<body>
+  <!-- 상단 프라이버시 신뢰 배너 -->
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <span class="trust-badge" id="trustBadge1">🔒 100% 브라우저 직접 처리 (서버 전송 없음)</span>
+      <span id="trustBadge2">⚡ 무제한 무료 · 대기열 없음</span>
+      <span id="trustBadge3">🌍 PC · 모바일 완벽 호환</span>
+    </div>
+  </div>
+
+  <!-- 헤더 및 퀵 도구 네비게이션 -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="../" class="brand" id="brandLogo">
+        <div class="brand-icon">SC</div>
+        <span>Swift<span class="accent">Convert</span></span>
+      </a>
+
+      <nav class="nav-links" aria-label="Quick Tools">
+        <button class="nav-btn" data-nav-tool="pdf-to-jpg">PDF JPG 변환</button>
+        <button class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기</button>
+        <button class="nav-btn" data-nav-tool="organize-pdf">PDF 페이지삭제</button>
+        <button class="nav-btn" data-nav-tool="compress-kb">200KB 압축</button>
+        <button class="nav-btn" data-nav-tool="heic-to-jpg">HEIC 변환</button>
+        <button class="nav-btn" data-nav-tool="stitch-images">사진 이어붙이기</button>
+      </nav>
+
+      <div class="header-controls">
+        <button type="button" id="jumpFeedbackBtn" class="feedback-nav-btn">💬 댓글·요청</button>
+        <select id="langSelect" class="lang-select" aria-label="Language Selector">
+          <option value="ko">🇰🇷 한국어</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
+        <button id="themeToggleBtn" class="icon-btn" title="Dark/Light Mode" aria-label="Toggle Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 상단 리더보드 광고 슬롯 -->
+  <div class="ad-container">
+    <div class="ad-slot ad-slot-leaderboard" data-ad-slot="topLeaderboard"></div>
+  </div>
+
+  <main class="main-container">
+    <!-- ================= 1. 홈(전체 도구 그리드) 뷰 ================= -->
+    <section id="homeView" style="display:none;">
+      <div class="hero-section">
+        <h1 class="hero-title" id="heroTitle">필요한 모든 PDF · 이미지 변환을 한곳에서 무료로</h1>
+        <p class="hero-subtitle" id="heroSubtitle">
+          설치나 회원가입 없이 100% 무료로 이용하세요. 모든 파일은 서버로 전송되지 않고 사용자의 브라우저 안에서 즉시 처리되어 완벽하게 안전합니다.
+        </p>
+
+        <div class="search-box-wrap">
+          <input
+            type="search"
+            id="toolSearchInput"
+            class="tool-search-input"
+            placeholder="🔍 필요한 기능을 검색하세요 (예: 200KB, 합치기, HEIC, 워터마크, 이어붙이기...)"
+            autocomplete="off"
+          />
+          <button type="button" id="searchClearBtn" class="search-clear-btn" aria-label="Clear search">✕</button>
+        </div>
+
+        <div class="category-tabs">
+          <button class="cat-tab active" data-cat="all" id="catAllBtn">전체 도구 (15)</button>
+          <button class="cat-tab" data-cat="pdf" id="catPdfBtn">PDF 변환 · 편집 (9)</button>
+          <button class="cat-tab" data-cat="image" id="catImageBtn">이미지 변환 · 압축 (6)</button>
+        </div>
+      </div>
+
+      <!-- 15종 변환기 카드 그리드 -->
+      <div class="tools-grid" id="toolsGrid"></div>
+
+      <!-- 인피드 광고 슬롯 -->
+      <div class="ad-slot ad-slot-infeed" data-ad-slot="bottomInfeed"></div>
+    </section>
+
+    <!-- ================= 2. 개별 변환기 작업실 뷰 ================= -->
+    <section id="workspaceView" class="workspace-wrapper active">
+      <div class="workspace-topbar">
+        <button class="back-btn" id="backToAllBtn">← 모든 변환 도구 보기</button>
+        <button class="share-btn" id="shareToolBtn">🔗 이 도구 링크 복사</button>
+      </div>
+
+      <div class="workspace-grid">
+        <!-- 좌측 메인 변환 영역 -->
+        <div class="converter-stage">
+          <div class="step-tracker" aria-label="Conversion Progress Steps">
+            <span class="step-pill active" id="step1Pill">1. 파일 선택</span>
+            <span class="step-pill" id="step2Pill">2. 옵션 설정</span>
+            <span class="step-pill" id="step3Pill">3. 즉시 다운로드</span>
+          </div>
+
+          <div class="tool-header-info">
+            <h1 id="activeToolTitle">PDF 회전 무료 저장</h1>
+            <p id="activeToolDesc">스캔할 때 거꾸로 되거나 가로로 누워버린 PDF 문서를 90도, 180도, 270도로 회전해 영구 저장하세요.</p>
+          </div>
+
+          <input type="file" id="fileInput" hidden />
+
+          <!-- 드래그 앤 드롭 업로드 박스 -->
+          <div class="dropzone" id="dropzone">
+            <span class="dropzone-icon">📂</span>
+            <div>
+              <button type="button" class="select-files-btn" id="selectFilesBtn">
+                <span id="selectFilesBtnText">파일 선택하기</span>
+              </button>
+            </div>
+            <p class="dropzone-hint" id="dropHint">또는 여기에 파일을 마우스로 끌어다 놓으세요 (Drag &amp; Drop)</p>
+            <button type="button" class="sample-btn" id="trySampleBtn">🧪 샘플 파일로 1초 만에 테스트해보기</button>
+          </div>
+
+          <!-- 선택된 파일 목록 -->
+          <div class="file-list-section" id="fileListSection" style="display:none;">
+            <div class="file-list-header">
+              <strong id="selectedFilesTitle">선택된 파일 목록</strong>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="mini-btn" id="addMoreBtn">+ 파일 추가</button>
+                <button type="button" class="mini-btn" id="clearAllBtn">전체 비우기</button>
+              </div>
+            </div>
+            <div class="file-list" id="fileList"></div>
+          </div>
+
+          <!-- PDF 시각적 페이지 편집기 (organize-pdf 전용) -->
+          <div class="organizer-section" id="organizerSection" style="display:none;">
+            <div class="organizer-header">
+              <div>
+                <strong id="orgTitle">🧩 PDF 페이지 시각적 편집기</strong>
+                <div id="orgHint" style="font-size:0.83rem;color:var(--text-muted);">
+                  각 페이지의 순서 이동(◀ ▶), 회전(↻), 삭제(🗑️)를 클릭한 뒤 변환 버튼을 누르세요.
+                </div>
+              </div>
+            </div>
+            <div class="organizer-grid" id="organizerGrid"></div>
+          </div>
+
+          <!-- 변환 옵션 패널 -->
+          <div class="options-panel" id="optionsPanel" style="display:none;">
+            <div class="options-title" id="optionsTitle">⚙️ 변환 옵션 설정</div>
+            <div class="options-grid" id="optionsGrid"></div>
+          </div>
+
+          <!-- 변환 실행 버튼 -->
+          <div class="convert-action-bar" id="convertActionBar" style="display:none;">
+            <button type="button" class="convert-submit-btn" id="convertNowBtn">지금 변환 시작하기 ⚡</button>
+          </div>
+
+          <!-- 진행률 표시 -->
+          <div class="progress-box" id="progressBox">
+            <div id="processingText" style="font-weight:700;">브라우저에서 안전하게 고속 변환 중입니다...</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div id="progressPct" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">0%</div>
+          </div>
+
+          <!-- 변환 완료 및 다운로드 박스 (핵심 광고 수익화 지점) -->
+          <div class="results-box" id="resultsBox">
+            <div class="results-header">
+              <h2 id="doneTitle">🎉 변환이 완료되었습니다!</h2>
+              <p id="doneSubtitle" style="color:var(--text-muted);">아래 버튼을 눌러 변환된 파일을 바로 저장하세요.</p>
+              <button type="button" class="download-all-btn" id="downloadAllZipBtn">📦 전체 파일 ZIP으로 다운로드</button>
+              <div>
+                <button type="button" class="mini-btn" id="convertAnotherBtn">🔄 다른 파일 더 변환하기</button>
+              </div>
+            </div>
+
+            <!-- 결과 다운로드 버튼 바로 아래 고효율(CTR) 광고 슬롯 -->
+            <div class="ad-slot ad-slot-infeed" data-ad-slot="conversionResult"></div>
+
+            <div class="results-grid" id="resultsGrid"></div>
+          </div>
+
+          <!-- 연관 도구 내부 링크 (SEO + 추가 페이지뷰 유도 카드) -->
+          <div class="related-tools-box" id="relatedToolsBox" style="display:none;">
+            <div class="related-tools-header">
+              <h3 id="relatedTitle">✨ 함께 많이 쓰는 추천 도구</h3>
+              <p id="relatedSubtitle">다음 작업도 설치 없이 바로 이어서 해보세요 — 클릭 한 번으로 즉시 이동합니다</p>
+            </div>
+            <div class="related-pills" id="relatedPills"></div>
+          </div>
+        </div>
+
+        <!-- 우측 사이드바 광고 슬롯 (300x250 / 336x280) -->
+        <aside>
+          <div class="ad-slot ad-slot-rectangle" data-ad-slot="sidebarRectangle"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= 3. SEO 콘텐츠 & FAQ (도구별 맞춤 자동 전환) ================= -->
+    <section class="seo-section">
+      <div class="seo-card">
+        <h2 id="howToTitle">💡 3단계 간단 사용 방법</h2>
+        <ul class="step-list" id="howToStepsList"><li class="step-item"><span class="step-num">1</span><span>방향을 바로잡을 PDF 문서를 선택하세요.</span></li><li class="step-item"><span class="step-num">2</span><span>90°, 180°, 270° 중 원하는 회전 각도를 선택하세요.</span></li><li class="step-item"><span class="step-num">3</span><span>변환 버튼을 누르면 회전 상태가 저장된 새 PDF 파일을 바로 다운로드합니다.</span></li></ul>
+      </div>
+
+      <div class="seo-card">
+        <h2 id="faqTitle">❓ 자주 묻는 질문 (FAQ)</h2>
+        <div class="faq-list" id="faqList"><div class="faq-item"><div class="faq-q">Q. PDF 뷰어에서 회전하면 닫았다 열 때 원래대로 돌아가는데 여기는 영구 저장되나요?</div><div class="faq-a">네, PDF 내부 페이지 메타데이터 자체를 수정해 새 파일로 생성하므로 어느 기기에서 열어도 회전된 상태로 유지됩니다.</div></div></div>
+      </div>
+    </section>
+
+    <!-- ================= 4. 방문자 댓글창 & 개발자 요청서 ================= -->
+    <section id="communitySection" class="community-section" aria-label="Comments and Developer Requests">
+      <h2 class="sr-only">방문자 댓글창 및 개발자 기능 요청서</h2>
+    </section>
+  </main>
+
+  <!-- 우측 하단 플로팅 실시간 도우미 & 개발자 요청 채팅창 -->
+  <div id="chatWidget" class="chat-widget"></div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>SwiftConvert</strong> · 100% Client-Side File Converter (Zero Server Cost)
+      </div>
+      <div class="footer-links">
+        <button type="button" id="ownerGuideBtn">💰 SEO 키워드 &amp; 무료 배포 가이드</button>
+        <button type="button" id="licensesLink">오픈소스 라이선스</button>
+        <button type="button" id="privacyLink">개인정보처리방침</button>
+        <button type="button" id="termsLink">이용약관</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 안내 모달 -->
+  <div class="modal-backdrop" id="infoModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">안내</h3>
+        <button type="button" class="icon-btn" id="modalCloseBtn">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div class="toast-msg" id="toastMsg"></div>
+
+  <script>window.INITIAL_TOOL_ID = "rotate-pdf";</script>
+  <script src="../js/ads-config.js?v=8569164a"></script>
+  <script src="../js/feedback-config.js?v=6d7736d1"></script>
+  <script src="../js/tools-seo.js?v=b9c5ea20"></script>
+  <script src="../js/i18n.js?v=c7e3c80b"></script>
+  <script src="../js/converters.js?v=07dad350"></script>
+  <script src="../js/feedback.js?v=2670adda"></script>
+  <script src="../js/app.js?v=b9181a57"></script>
+</body>
+</html>
