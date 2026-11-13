@@ -1084,7 +1084,7 @@
           </div>
           <div class="fb-tabs" role="tablist">
             <button type="button" class="fb-tab-btn${fbState.activeTab === "comments" ? " active" : ""}" data-fb-tab="comments" role="tab">
-              ${escapeHtml(s.tabComments)} <span class="fb-tab-count">${allComments.length}</span>
+              ${escapeHtml(s.tabComments)}${giscusActive ? "" : ` <span class="fb-tab-count">${allComments.length}</span>`}
             </button>
             <button type="button" class="fb-tab-btn${fbState.activeTab === "request" ? " active" : ""}" data-fb-tab="request" role="tab">
               ${escapeHtml(s.tabRequest)} <span class="fb-tab-count">${allRequests.length}</span>

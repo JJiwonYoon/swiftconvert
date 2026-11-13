@@ -21,24 +21,24 @@
 window.FEEDBACK_CONFIG = {
   // "local": 내장 댓글창 (현재 브라우저 저장 + 즉시 테스트 가능)
   // "giscus": GitHub Discussions 기반 실시간 공유 댓글 위젯 임베드
-  commentProvider: "local",
+  commentProvider: "giscus",
 
   giscus: {
-    repo: "",               // 예: "username/leafconvert-comments"
-    repoId: "",             // giscus.app 에서 발급받은 data-repo-id
+    repo: "JJiwonYoon/leafconvert-comments",
+    repoId: "R_kgDOVslRXQ",
     category: "Announcements",
-    categoryId: "",         // giscus.app 에서 발급받은 data-category-id
+    categoryId: "DIC_kwDOVslRXc4DLAuN",
     mapping: "pathname",    // 도구 URL(/pdf-to-jpg/, /compress-kb/ 등)별로 스레드 자동 분리
     strict: "0",
     reactionsEnabled: "1",
     emitMetadata: "0",
-    inputPosition: "top"
+    inputPosition: "bottom"
   },
 
   // 개발자 요청서 전달 채널 (설정 시 즉시 실전 전송 활성화)
   requestDelivery: {
     endpoint: "",           // 예: "https://formspree.io/f/xxxxxxxx" 또는 Google Apps Script / Cloudflare Worker URL
-    githubRepo: "",         // 예: "username/leafconvert" -> "GitHub Issue로 보내기" 버튼 활성화
+    githubRepo: "JJiwonYoon/leafconvert-comments",
     contactEmail: ""        // 예: "dev@example.com" -> "이메일로 보내기" 버튼 활성화
   },
 
