@@ -1337,11 +1337,18 @@
     document.getElementById("privacyLink").addEventListener("click", () => {
       openModal(
         t().privacyLink,
-        `<div style="display:flex;flex-direction:column;gap:10px;font-size:0.9rem;line-height:1.7;">
-          <p><strong>1. 파일 로컬 처리 원칙 (No Server Upload)</strong><br>
-          본 서비스(SwiftConvert)는 사용자가 선택한 PDF 및 이미지 파일을 외부 서버로 전송·저장하지 않습니다. 모든 변환은 사용자 웹 브라우저 내부(Client-side) 메모리에서 즉시 처리되며 창을 닫으면 즉시 소멸됩니다.</p>
-          <p><strong>2. 광고 및 제3자 쿠키 안내</strong><br>
-          향후 Google AdSense, Kakao AdFit 등 광고 파트너 연동 시 맞춤형 광고 제공을 위해 제3자 쿠키가 사용될 수 있습니다. 사용자는 브라우저 설정 또는 <a href="https://adssettings.google.com" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Google 광고 설정</a>에서 맞춤형 광고를 거부할 수 있습니다.</p>
+        `<div style="display:flex;flex-direction:column;gap:10px;font-size:0.88rem;line-height:1.68;">
+          <p><strong>1. 파일 로컬 처리 원칙 (No File Server Upload)</strong><br>
+          본 서비스는 사용자가 선택한 PDF 및 이미지 파일을 운영자의 외부 서버로 전송·저장하지 않습니다. 모든 변환은 사용자 웹 브라우저 내부(Client-side) 메모리에서 즉시 처리되며 페이지를 닫으면 소멸됩니다.</p>
+          <p><strong>2. 브라우저 로컬 저장소(localStorage) 이용</strong><br>
+          언어·테마 설정, 댓글 미리보기, 개발자 요청서 내역 및 도우미 대화 기록은 사용자의 브라우저 <code>localStorage</code>에 저장되며, 브라우저 캐시/사이트 데이터 삭제로 언제든 직접 제거할 수 있습니다.</p>
+          <p><strong>3. 개발자 요청서·공유 댓글 및 외부 CDN 안내</strong><br>
+          이용자가 자발적으로 개발자 요청서를 작성·전송하거나 외부 댓글 서비스(Giscus 등)가 연결된 경우, 입력한 내용과 선택적 연락처·환경 정보(동의 시)만 해당 수신 채널로 전달됩니다. 또한 정적 파일 호스팅(Cloudflare) 및 오픈소스 CDN(cdnjs, unpkg) 로딩 시 표준 접속 로그가 각 인프라 사업자 정책에 따라 처리될 수 있습니다.</p>
+          <p><strong>4. 광고 및 제3자 쿠키 (Third-Party Ads &amp; Cookies)</strong><br>
+          Google AdSense, Kakao AdFit 등 광고 파트너 연동 시 맞춤형 광고 제공을 위해 제3자 쿠키가 사용될 수 있으며, <a href="https://adssettings.google.com" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">Google 광고 설정</a>이나 브라우저 설정에서 거부할 수 있습니다.</p>
+          <p style="color:var(--text-muted);font-size:0.82rem;border-top:1px solid var(--border-color);padding-top:8px;">
+            <strong>Privacy Summary (EN):</strong> Selected PDF and image files are processed 100% locally inside your browser and are never uploaded to our servers. Preferences and local feedback drafts are stored only in your browser's localStorage unless you voluntarily submit a developer request or use a connected third-party comment widget. Third-party ad partners may use cookies when enabled.
+          </p>
         </div>`
       );
     });
@@ -1349,10 +1356,15 @@
     document.getElementById("termsLink").addEventListener("click", () => {
       openModal(
         t().termsLink,
-        `<p style="font-size:0.92rem;line-height:1.7;">
-          본 웹사이트의 파일 변환 도구는 무료로 제공되며, 개인 및 상업적 용도로 자유롭게 사용하실 수 있습니다.
-          모든 변환은 사용자의 브라우저 리소스를 활용하여 로컬로 실행되므로 대용량 파일 변환 시 기기 성능에 따라 속도가 달라질 수 있으며, 변환 전 원본 파일 백업을 권장합니다.
-        </p>`
+        `<div style="display:flex;flex-direction:column;gap:10px;font-size:0.88rem;line-height:1.68;">
+          <p><strong>1. 이용 목적 및 저작권 준수 (Permitted Use &amp; Copyright)</strong><br>
+          본 웹사이트의 파일 변환 도구는 개인 및 상업적 용도로 무료로 이용할 수 있습니다. 단, 이용자는 변환·편집하는 파일에 대한 정당한 권리(저작권·개인정보 포함)를 보유해야 하며, 불법 콘텐츠 제작, 타인 권리 침해 또는 암호·DRM 우회 목적의 사용은 금지됩니다.</p>
+          <p><strong>2. 무상 제공 및 면책 (AS-IS &amp; Limitation of Liability)</strong><br>
+          모든 변환은 사용자의 브라우저 리소스(CPU/메모리)로 로컬 실행되므로 대용량 파일이나 기기 환경에 따라 속도·결과물 호환성이 달라질 수 있습니다. 서비스는 있는 그대로(AS-IS) 무상 제공되며, 중요한 문서는 반드시 변환 전 원본을 별도 백업하시기 바랍니다. 관련 법령이 허용하는 범위 내에서 데이터 손실이나 간접·결과적 손해에 대한 책임을 부담하지 않습니다.</p>
+          <p style="color:var(--text-muted);font-size:0.82rem;border-top:1px solid var(--border-color);padding-top:8px;">
+            <strong>Terms Summary (EN):</strong> Tools are provided free of charge "AS IS" without warranty. You retain full responsibility for ensuring you have legal rights to the files you process and are advised to keep backups of original documents.
+          </p>
+        </div>`
       );
     });
 
