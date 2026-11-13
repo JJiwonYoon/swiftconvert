@@ -1,40 +1,45 @@
-# LeafConvert — 서버/도메인 비용 0원 다국어 PDF·이미지 변환기 (15종 + SEO 전용 랜딩 페이지)
+# LeafConvert — 서버/도메인 비용 0원 다국어 PDF·이미지 변환기 (큐레이션 19종 + SEO 전용 랜딩 페이지)
 
-iLovePDF 스타일의 **100% 브라우저(Client-Side) 파일 변환 웹사이트**입니다.
+iLovePDF / iLoveIMG / BentoPDF 스타일의 핵심 인기 기능만 엄선한 **100% 브라우저(Client-Side) 파일 변환 웹사이트**입니다.
 파일을 외부 서버로 전송하지 않고 사용자 브라우저 안에서 직접 변환하므로 **서버 유지비 0원**, **개인정보 유출 위험 0%**로 운영할 수 있습니다.
 
-## 주요 기능 (15종 변환기 + 4개국어 지원 + SEO 구조화)
+## 주요 기능 (큐레이션 19종 변환기 + 4개국어 지원 + SEO 301 리다이렉트)
 - **다국어(i18n) 지원**: 한국어(`ko`), 영어(`en`), 일본어(`ja`), 스페인어(`es`) 자동 감지 및 실시간 전환
-- **실시간 도구 검색**: 메인 검색창에서 키워드(예: `200KB`, `워터마크`, `HEIC`, `이어붙이기`)로 즉시 검색
-- **PDF 도구 9종**:
-  1. `pdf-to-jpg`: PDF 각 페이지를 고화질 JPG로 변환 + 일괄 ZIP 다운로드
-  2. `jpg-to-pdf`: 여러 JPG/PNG/WebP 이미지를 순서대로 단일 PDF로 병합
-  3. `merge-pdf`: 여러 PDF 파일을 원하는 순서로 병합
-  4. `split-pdf`: 전체 페이지 개별 PDF 분할(ZIP) 또는 특정 페이지 범위 추출 (`1-3, 5`)
-  5. `organize-pdf`: 시각적 페이지 썸네일 미리보기 + 특정 페이지 삭제·순서 변경·개별 회전
-  6. `rotate-pdf`: PDF 전체 페이지 90° / 180° / 270° 회전
-  7. `watermark-pdf`: 한글/영문 워터마크 삽입 (대각선 중앙 / 바둑판 전체 / 우측 하단)
-  8. `page-numbers-pdf`: PDF 페이지 번호 삽입 (`1 / 10`, `1`, `- 1 -`, `Page 1`)
-  9. `pdf-to-png`: 텍스트 깨짐 없는 무손실 PNG 변환
-- **이미지 도구 6종**:
-  10. `compress-image`: 이미지 화질 조절을 통한 파일 용량 압축
-  11. `compress-kb`: 원서/이력서/관공서 제출용 **목표 용량(100KB / 200KB / 500KB 이하)** 자동 맞춤 압축
-  12. `webp-to-jpg`: WebP / PNG / SVG / GIF ↔ JPG / PNG / WebP 포맷 변환
-  13. `heic-to-jpg`: 아이폰 HEIC/HEIF 사진을 일반 JPG/PNG로 변환
-  14. `resize-image`: 가로 픽셀(px) 및 증명·SNS 프리셋 일괄 리사이즈
-  15. `stitch-images`: 스크린샷·카톡 캡처·영수증을 세로 또는 가로 1장의 이미지로 이어붙이기
+- **실시간 도구 검색**: 메인 검색창에서 키워드(예: `PDF 압축`, `서명`, `비밀번호`, `200KB`, `EXIF`, `모자이크`)로 즉시 검색
+- **PDF 도구 10종**:
+  1. `compress-pdf`: PDF 용량 줄이기 (ObjectStream + 해상도 최적화 + 2MB/5MB/10MB 이하 맞추기)
+  2. `pdf-to-jpg`: PDF → 고화질 JPG / 무손실 PNG / WebP 이미지 변환 + 일괄 ZIP 다운로드
+  3. `jpg-to-pdf`: 여러 JPG/PNG/WebP/HEIC 사진을 순서대로 단일 PDF로 병합
+  4. `merge-pdf`: 여러 PDF 파일을 원하는 순서로 병합
+  5. `split-pdf`: 전체 페이지 개별 PDF 분할(ZIP) 또는 특정 페이지 범위 추출 (`1-3, 5`)
+  6. `organize-pdf`: 시각적 페이지 썸네일 미리보기 + 삭제·순서 변경·개별 회전·전체 `+90°` 일괄 회전
+  7. `sign-pdf`: 손글씨 전자서명 그리기 · 도장 PNG(흰 배경 자동 투명화) 클릭/드래그 배치
+  8. `unlock-pdf`: 인쇄 제한 해제 및 알고 있는 열기 비밀번호 복호화 저장
+  9. `watermark-pdf`: 한글/영문 워터마크 삽입 (대각선 중앙 / 바둑판 전체 / 우측 하단)
+  10. `pdf-to-text`: PDF 텍스트 추출 미리보기 원클릭 복사 및 UTF-8 `.txt` 저장
+- **이미지 도구 9종**:
+  11. `compress-image`: 이미지 화질 조절을 통한 파일 용량 압축
+  12. `compress-kb`: 원서/이력서/관공서 제출용 **목표 용량(100KB / 200KB / 500KB 이하)** 자동 맞춤 압축
+  13. `webp-to-jpg`: WebP / AVIF / PNG / SVG / GIF ↔ JPG / PNG / WebP 일괄 변환
+  14. `heic-to-jpg`: 아이폰 HEIC/HEIF 사진을 일반 JPG/PNG로 변환
+  15. `crop-image`: 자유/1:1/4:3/16:9/3.5:4.5 증명 비율 자르기 · 90° 회전 · 좌우/상하 반전
+  16. `resize-image`: 가로 픽셀(px) 및 증명·SNS 프리셋 일괄 리사이즈
+  17. `stitch-images`: 스크린샷·카톡 캡처·영수증을 세로 또는 가로 1장의 이미지로 이어붙이기
+  18. `exif-remove`: GPS 위치정보 · 카메라 기종 EXIF 메타데이터 실시간 리포트 확인 및 JPEG/PNG 무손실 삭제
+  19. `blur-image`: 얼굴·번호판·계좌번호 드래그 모자이크 / 블러 / 검정 박스 가리기
+- **SEO 리다이렉트 (`_redirects`)**: 중복/저빈도 통합 URL(`/pdf-to-png/`, `/rotate-pdf/`, `/page-numbers-pdf/`)은 Cloudflare Pages `_redirects` 301 규칙으로 통합 도구(`/pdf-to-jpg/`, `/organize-pdf/`)로 연결됩니다.
 
 ## 무료 도메인·호스팅(0원) 배포 및 검색(SEO) 등록 방법
 
 ### 1. 본인 배포 주소로 SEO 페이지/사이트맵 일괄 갱신
-Cloudflare Pages에서 발급받은 주소(`https://leafconvert.pages.dev`)가 정해지면 아래 명령어 한 줄로 `sitemap.xml`, `robots.txt`, 15개 개별 도구 HTML의 `canonical` 및 구조화 데이터를 한 번에 갱신할 수 있습니다:
+Cloudflare Pages에서 발급받은 주소(`https://leafconvert.pages.dev`)가 정해지면 아래 명령어 한 줄로 `sitemap.xml`, `robots.txt`, 19개 개별 도구 HTML의 `canonical` 및 구조화 데이터를 한 번에 갱신할 수 있습니다:
 ```bash
 python3 scripts/build_seo_pages.py --domain https://leafconvert.pages.dev
 ```
 
 ### 2. Cloudflare Pages 무료 배포 (상업적 광고 허용 + 트래픽 무제한)
-1. [Cloudflare Pages](https://pages.cloudflare.com/)에 로그인 후 **Workers & Pages → Create → Pages → Upload assets**를 선택합니다.
-2. 이 프로젝트 폴더 전체(`index.html`, `css/`, `js/`, `15개 도구 폴더/`, `robots.txt`, `sitemap.xml`)를 업로드합니다.
+1. [Cloudflare Pages](https://pages.cloudflare.com/)에 로그인 후 **Workers & Pages → Create → Pages → Upload assets** (또는 Git 연동)을 선택합니다.
+2. 이 프로젝트 폴더 전체(`index.html`, `css/`, `js/`, `19개 도구 폴더/`, `_redirects`, `robots.txt`, `sitemap.xml`)를 배포합니다.
 3. 배포 후 **Google Search Console**과 **네이버 서치어드바이저**에 사이트를 등록하고 `sitemap.xml`을 제출하세요.
 
 ### 3. 광고 수익화 설정 (`js/ads-config.js`)

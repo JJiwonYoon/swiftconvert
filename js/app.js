@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * LeafConvert 메인 애플리케이션 컨트롤러
- * - 다국어(i18n) 전환, 실시간 도구 검색, 15종 변환 옵션 & 시각적 PDF 페이지 편집
+ * - 다국어(i18n) 전환, 실시간 도구 검색, 큐레이션 19종 변환 옵션 & 시각적 편집기
  * - SEO 정적 랜딩 경로(/<tool-id>/) & SPA history.pushState 양방향 호환
  * - 광고 슬롯(AdSense / Kakao AdFit / 제휴 배너) 렌더링
  * ============================================================================
@@ -33,6 +33,8 @@
     files: [],
     results: [],
     pagePlan: [],
+    editorCtrl: null,
+    mountSeq: 0,
     theme: "light"
   };
 
@@ -282,6 +284,8 @@
     }
     setTxt("orgTitle", s.orgTitle);
     setTxt("orgHint", s.orgHint);
+    setTxt("orgBulkRotateBtn", s.orgBulkRotateBtn);
+    setTxt("orgResetBtn", s.orgResetBtn);
 
     const searchInput = document.getElementById("toolSearchInput");
     if (searchInput) searchInput.placeholder = s.searchPlaceholder;
@@ -427,8 +431,36 @@
     const s = t();
     let html = "";
 
-    if (toolId === "pdf-to-jpg" || toolId === "pdf-to-png") {
+    if (toolId === "compress-pdf") {
       html += `
+        <div class="option-group">
+          <label for="optCompressLevel">${s.optCompressLevel}</label>
+          <select id="optCompressLevel">
+            <option value="balanced">${s.optCompressBal}</option>
+            <option value="high">${s.optCompressHigh}</option>
+            <option value="extreme">${s.optCompressExt}</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <label for="optCompressTargetMb">${s.optCompressTargetMb}</label>
+          <select id="optCompressTargetMb">
+            <option value="0">${s.optCompressMbAuto}</option>
+            <option value="2">${s.optCompressMb2}</option>
+            <option value="5">${s.optCompressMb5}</option>
+            <option value="10">${s.optCompressMb10}</option>
+          </select>
+        </div>
+      `;
+    } else if (toolId === "pdf-to-jpg") {
+      html += `
+        <div class="option-group">
+          <label for="optTargetFormat">${s.optTargetFormat}</label>
+          <select id="optTargetFormat">
+            <option value="jpg">JPG (.jpg)</option>
+            <option value="png">PNG (.png Lossless)</option>
+            <option value="webp">WebP (.webp)</option>
+          </select>
+        </div>
         <div class="option-group">
           <label for="optDpi">${s.optDpi}</label>
           <select id="optDpi">
@@ -436,15 +468,11 @@
             <option value="300">${s.optDpiHigh}</option>
           </select>
         </div>
+        <div class="option-group">
+          <label for="optQuality">${s.optQuality}: <span id="qualityVal">90%</span></label>
+          <input type="range" id="optQuality" min="30" max="100" value="90" />
+        </div>
       `;
-      if (toolId === "pdf-to-jpg") {
-        html += `
-          <div class="option-group">
-            <label for="optQuality">${s.optQuality}: <span id="qualityVal">90%</span></label>
-            <input type="range" id="optQuality" min="30" max="100" value="90" />
-          </div>
-        `;
-      }
     } else if (toolId === "jpg-to-pdf") {
       html += `
         <div class="option-group">
@@ -487,15 +515,23 @@
           </div>
         </div>
       `;
-    } else if (toolId === "rotate-pdf") {
+    } else if (toolId === "sign-pdf") {
       html += `
         <div class="option-group">
-          <label for="optRotateAngle">${s.optRotateAngle}</label>
-          <select id="optRotateAngle">
-            <option value="90">90° (Clockwise)</option>
-            <option value="180">180° (Upside Down)</option>
-            <option value="270">270° (Counter-Clockwise)</option>
-          </select>
+          <label>${s.edSignTitle}</label>
+          <div style="font-size:0.86rem;color:var(--text-muted);padding-top:6px;">
+            ${s.edSignPlaceHint}
+          </div>
+        </div>
+      `;
+    } else if (toolId === "unlock-pdf" || toolId === "pdf-to-text") {
+      html += `
+        <div class="option-group">
+          <label for="optPdfPassword">${s.optPdfPassword}</label>
+          <input type="password" id="optPdfPassword" autocomplete="off" placeholder="••••••••" />
+          <small style="color:var(--text-muted);font-size:0.78rem;margin-top:4px;display:block;">
+            ${s.optPdfPasswordHint}
+          </small>
         </div>
       `;
     } else if (toolId === "watermark-pdf") {
@@ -524,31 +560,6 @@
         <div class="option-group">
           <label for="optWatermarkOpacity">${s.optWatermarkOpacity}: <span id="wmOpacityVal">25%</span></label>
           <input type="range" id="optWatermarkOpacity" min="10" max="80" value="25" />
-        </div>
-      `;
-    } else if (toolId === "page-numbers-pdf") {
-      html += `
-        <div class="option-group">
-          <label for="optPageNumPos">${s.optPageNumPos}</label>
-          <select id="optPageNumPos">
-            <option value="bottom-center">${s.optPnBottomCenter}</option>
-            <option value="bottom-right">${s.optPnBottomRight}</option>
-            <option value="bottom-left">${s.optPnBottomLeft}</option>
-            <option value="top-right">${s.optPnTopRight}</option>
-          </select>
-        </div>
-        <div class="option-group">
-          <label for="optPageNumFormat">${s.optPageNumFormat}</label>
-          <select id="optPageNumFormat">
-            <option value="of">1 / 10</option>
-            <option value="num">1, 2, 3</option>
-            <option value="dash">- 1 -</option>
-            <option value="page">Page 1</option>
-          </select>
-        </div>
-        <div class="option-group">
-          <label for="optPageNumStart">${s.optPageNumStart}</label>
-          <input type="number" id="optPageNumStart" min="1" max="9999" value="1" />
         </div>
       `;
     } else if (toolId === "merge-pdf") {
@@ -582,6 +593,27 @@
             <option value="jpeg">JPG (.jpg)</option>
             <option value="webp">WebP (.webp)</option>
           </select>
+        </div>
+      `;
+    } else if (toolId === "crop-image" || toolId === "blur-image") {
+      html += `
+        <div class="option-group">
+          <label for="optTargetFormat">${s.optTargetFormat}</label>
+          <select id="optTargetFormat">
+            <option value="original">${s.optOutFormatOrig}</option>
+            <option value="jpeg">JPG (.jpg)</option>
+            <option value="png">PNG (.png)</option>
+            <option value="webp">WebP (.webp)</option>
+          </select>
+        </div>
+      `;
+    } else if (toolId === "exif-remove") {
+      html += `
+        <div class="option-group">
+          <label>${s.edExifTitle}</label>
+          <div style="font-size:0.86rem;color:var(--text-muted);padding-top:6px;">
+            ${s.edExifNoneDesc}
+          </div>
         </div>
       `;
     } else if (toolId === "stitch-images") {
@@ -717,30 +749,33 @@
       const el = document.getElementById(id);
       return el ? el.value : fallback;
     };
-    return {
-      dpi: val("optDpi", "150"),
-      quality: val("optQuality", "85"),
-      pageSize: val("optPageSize", "a4"),
-      margin: val("optMargin", "small"),
-      splitMode: val("optSplitMode", "all"),
-      pageRange: val("optPageRange", "1-2"),
-      rotateAngle: val("optRotateAngle", "90"),
-      targetFormat: val("optTargetFormat", "jpeg"),
-      resizeWidth: val("optResizeWidth", "0"),
-      targetKb: val("optTargetKb", "200"),
-      watermarkText: val("optWatermarkText", "CONFIDENTIAL"),
-      watermarkLayout: val("optWatermarkLayout", "center"),
-      watermarkColor: val("optWatermarkColor", "#e5322d"),
-      watermarkOpacity: val("optWatermarkOpacity", "25"),
-      pageNumPos: val("optPageNumPos", "bottom-center"),
-      pageNumFormat: val("optPageNumFormat", "of"),
-      pageNumStart: val("optPageNumStart", "1"),
-      stitchDir: val("optStitchDir", "vertical"),
-      stitchFit: val("optStitchFit", "yes"),
-      stitchGap: val("optStitchGap", "12"),
-      stitchBg: val("optStitchBg", "#ffffff"),
-      pagePlan: state.pagePlan
-    };
+    const edOpts = state.editorCtrl && state.editorCtrl.getOptions ? state.editorCtrl.getOptions() : {};
+    return Object.assign(
+      {
+        compressLevel: val("optCompressLevel", "balanced"),
+        targetMaxMb: val("optCompressTargetMb", "0"),
+        dpi: val("optDpi", "150"),
+        quality: val("optQuality", "85"),
+        pageSize: val("optPageSize", "a4"),
+        margin: val("optMargin", "small"),
+        splitMode: val("optSplitMode", "all"),
+        pageRange: val("optPageRange", "1-2"),
+        pdfPassword: val("optPdfPassword", ""),
+        targetFormat: val("optTargetFormat", "jpeg"),
+        resizeWidth: val("optResizeWidth", "0"),
+        targetKb: val("optTargetKb", "200"),
+        watermarkText: val("optWatermarkText", "CONFIDENTIAL"),
+        watermarkLayout: val("optWatermarkLayout", "center"),
+        watermarkColor: val("optWatermarkColor", "#e5322d"),
+        watermarkOpacity: val("optWatermarkOpacity", "25"),
+        stitchDir: val("optStitchDir", "vertical"),
+        stitchFit: val("optStitchFit", "yes"),
+        stitchGap: val("optStitchGap", "12"),
+        stitchBg: val("optStitchBg", "#ffffff"),
+        pagePlan: state.pagePlan
+      },
+      edOpts
+    );
   }
 
   function updateStepTracker(step) {
@@ -793,6 +828,8 @@
     state.files = [];
     state.results = [];
     state.pagePlan = [];
+    state.editorCtrl = null;
+    state.mountSeq++;
 
     if (pushHistory) {
       pushToolUrl(toolId);
@@ -830,6 +867,8 @@
     state.files = [];
     state.results = [];
     state.pagePlan = [];
+    state.editorCtrl = null;
+    state.mountSeq++;
 
     if (pushHistory) {
       pushToolUrl(null);
@@ -846,12 +885,64 @@
     document.getElementById("dropzone").style.display = "block";
     document.getElementById("fileListSection").style.display = "none";
     document.getElementById("organizerSection").style.display = "none";
+    const ved = document.getElementById("visualEditorSection");
+    if (ved) {
+      ved.style.display = "none";
+      ved.innerHTML = "";
+    }
+    state.editorCtrl = null;
     document.getElementById("optionsPanel").style.display = "none";
     document.getElementById("convertActionBar").style.display = "none";
     document.getElementById("progressBox").classList.remove("active");
-    document.getElementById("resultsBox").classList.remove("active");
+    const resultsBox = document.getElementById("resultsBox");
+    resultsBox.classList.remove("active");
+    const oldTxt = resultsBox.querySelector(".text-preview-box");
+    if (oldTxt) oldTxt.remove();
     document.getElementById("progressBarFill").style.width = "0%";
     updateStepTracker(1);
+  }
+
+  /**
+   * Mount interactive canvas editor or metadata inspector for visual tools.
+   */
+  async function mountVisualEditorForTool() {
+    const ved = document.getElementById("visualEditorSection");
+    if (!ved) return;
+    const seq = ++state.mountSeq;
+    const toolId = state.activeToolId;
+    const visualTools = ["crop-image", "blur-image", "sign-pdf", "exif-remove"];
+
+    if (!visualTools.includes(toolId) || state.files.length === 0 || !window.VisualEditors) {
+      ved.style.display = "none";
+      ved.innerHTML = "";
+      state.editorCtrl = null;
+      return;
+    }
+
+    ved.style.display = "block";
+    ved.innerHTML = `<div style="padding:14px;color:var(--text-muted);font-size:0.86rem;">Loading editor preview...</div>`;
+
+    try {
+      let ctrl = null;
+      const labels = t();
+      if (toolId === "crop-image") {
+        ctrl = await window.VisualEditors.mountCropEditor(ved, state.files[0], labels);
+      } else if (toolId === "blur-image") {
+        ctrl = await window.VisualEditors.mountBlurEditor(ved, state.files[0], labels);
+      } else if (toolId === "sign-pdf") {
+        ctrl = await window.VisualEditors.mountSignEditor(ved, state.files[0], labels);
+      } else if (toolId === "exif-remove") {
+        ctrl = await window.VisualEditors.mountExifInspector(ved, state.files, labels);
+      }
+      if (seq !== state.mountSeq) return;
+      state.editorCtrl = ctrl;
+    } catch (err) {
+      if (seq !== state.mountSeq) return;
+      ved.innerHTML = `<div style="padding:12px;color:#dc2626;font-size:0.84rem;">${escapeHtml(
+        err.message || "Preview could not be initialized."
+      )}</div>`;
+      state.editorCtrl = null;
+    }
   }
 
   async function loadOrganizerPages(file) {
@@ -951,6 +1042,8 @@
     renderFileList();
     if (state.activeToolId === "organize-pdf" && state.files[0]) {
       loadOrganizerPages(state.files[0]);
+    } else {
+      mountVisualEditorForTool();
     }
   }
 
@@ -958,6 +1051,7 @@
     const listEl = document.getElementById("fileList");
     const section = document.getElementById("fileListSection");
     const orgSection = document.getElementById("organizerSection");
+    const vedSection = document.getElementById("visualEditorSection");
     const optionsPanel = document.getElementById("optionsPanel");
     const actionBar = document.getElementById("convertActionBar");
     const resultsBox = document.getElementById("resultsBox");
@@ -975,6 +1069,13 @@
     actionBar.style.display = "block";
     if (state.activeToolId !== "organize-pdf") {
       orgSection.style.display = "none";
+    }
+    if (
+      vedSection &&
+      !["crop-image", "blur-image", "sign-pdf", "exif-remove"].includes(state.activeToolId)
+    ) {
+      vedSection.style.display = "none";
+      vedSection.innerHTML = "";
     }
 
     listEl.innerHTML = "";
@@ -1141,6 +1242,32 @@
       });
     });
 
+    const oldPreview = resultsBox.querySelector(".text-preview-box");
+    if (oldPreview) oldPreview.remove();
+    const withText = results.find((r) => typeof r.textPreview === "string" && r.textPreview.length > 0);
+    if (withText) {
+      const box = document.createElement("div");
+      box.className = "text-preview-box";
+      box.innerHTML = `
+        <div class="text-preview-head">
+          <strong>📝 ${escapeHtml(withText.name)}</strong>
+          <button type="button" class="ed-btn" id="copyExtractedTextBtn">${escapeHtml(s.copyTextBtn)}</button>
+        </div>
+        <pre>${escapeHtml(withText.textPreview.slice(0, 12000))}</pre>
+      `;
+      grid.insertAdjacentElement("afterend", box);
+      const copyBtn = document.getElementById("copyExtractedTextBtn");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(withText.textPreview).then(() => showToast(s.copiedTextToast));
+          } else {
+            showToast(s.copiedTextToast);
+          }
+        });
+      }
+    }
+
     const relBox = document.getElementById("relatedToolsBox");
     if (relBox) relBox.classList.add("post-convert");
 
@@ -1181,6 +1308,8 @@
           renderRelatedTools(state.activeToolId);
           if (state.activeToolId === "organize-pdf" && state.pagePlan.length > 0) {
             renderOrganizerGrid();
+          } else if (state.files.length > 0) {
+            mountVisualEditorForTool();
           }
           if (state.results.length > 0) {
             renderResults(state.results);
@@ -1323,12 +1452,34 @@
       renderFileList();
       if (state.activeToolId === "organize-pdf" && state.files[0]) {
         loadOrganizerPages(state.files[0]);
+      } else {
+        mountVisualEditorForTool();
       }
     });
+
+    const bulkRotBtn = document.getElementById("orgBulkRotateBtn");
+    if (bulkRotBtn) {
+      bulkRotBtn.addEventListener("click", () => {
+        state.pagePlan.forEach((p) => {
+          if (!p.deleted) p.rotation = (p.rotation + 90) % 360;
+        });
+        renderOrganizerGrid();
+      });
+    }
+
+    const orgResetBtn = document.getElementById("orgResetBtn");
+    if (orgResetBtn) {
+      orgResetBtn.addEventListener("click", () => {
+        if (state.files[0]) {
+          loadOrganizerPages(state.files[0]);
+        }
+      });
+    }
 
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       state.files = [];
       state.pagePlan = [];
+      state.editorCtrl = null;
       renderFileList();
     });
 
@@ -1337,6 +1488,7 @@
       state.files = [];
       state.results = [];
       state.pagePlan = [];
+      state.editorCtrl = null;
       renderFileList();
     });
 

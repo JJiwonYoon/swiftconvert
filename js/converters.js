@@ -1,8 +1,8 @@
 /**
  * ============================================================================
  * 100% 클라이언트 사이드(브라우저 내부) 변환 엔진 (서버 비용 0원)
- * - 15종 PDF/이미지 변환, 시각적 페이지 편집, 워터마크, KB 맞춤 압축, 이미지 이어붙이기
- * - PDF.js, pdf-lib, JSZip, heic2any, HTML5 Canvas API 활용
+ * - 큐레이션 19종 PDF/이미지 변환·편집·서명·EXIF삭제·모자이크·목표용량 압축
+ * - PDF.js, pdf-lib, JSZip, heic2any, HTML5 Canvas, 순수 JS 바이너리 파서 활용
  * ============================================================================
  */
 
@@ -23,7 +23,20 @@ window.ConverterEngine = (function () {
   }
 
   function stripExt(filename) {
-    return filename.replace(/\.[^/.]+$/, "");
+    return String(filename || "file").replace(/\.[^/.]+$/, "");
+  }
+
+  /**
+   * Convert a data: URL to Uint8Array without network fetch.
+   */
+  function dataUrlToUint8Array(dataUrl) {
+    const commaIdx = String(dataUrl || "").indexOf(",");
+    if (commaIdx === -1) throw new Error("Invalid data URL.");
+    const b64 = dataUrl.slice(commaIdx + 1);
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
   }
 
   function loadImageFromFile(fileOrBlob) {
@@ -40,6 +53,69 @@ window.ConverterEngine = (function () {
       };
       img.src = url;
     });
+  }
+
+  /**
+   * Decode HEIC/HEIF files to a browser-decodable Blob when needed.
+   */
+  async function normalizeImageFile(fileOrBlob, targetMime, quality) {
+    const name = fileOrBlob && fileOrBlob.name ? fileOrBlob.name : "";
+    const type = fileOrBlob && fileOrBlob.type ? fileOrBlob.type : "";
+    const isHeic =
+      /\.heic$|\.heif$/i.test(name) ||
+      type === "image/heic" ||
+      type === "image/heif";
+    if (!isHeic) return fileOrBlob;
+    if (!window.heic2any) {
+      throw new Error("HEIC decoder library could not be loaded. Please check your internet connection.");
+    }
+    const converted = await window.heic2any({
+      blob: fileOrBlob,
+      toType: targetMime === "image/png" ? "image/png" : "image/jpeg",
+      quality: quality || 0.92
+    });
+    return Array.isArray(converted) ? converted[0] : converted;
+  }
+
+  /**
+   * Normalize HEIC if needed and load into an HTMLImageElement.
+   */
+  async function loadNormalizedImage(fileOrBlob, targetMime, quality) {
+    const normalized = await normalizeImageFile(fileOrBlob, targetMime, quality);
+    return await loadImageFromFile(normalized);
+  }
+
+  function resolveOutputMime(fmt, fallbackFile) {
+    if (fmt === "original" && fallbackFile) {
+      if (fallbackFile.type === "image/png" || /\.png$/i.test(fallbackFile.name || "")) {
+        return { mime: "image/png", ext: "png" };
+      }
+      if (fallbackFile.type === "image/webp" || /\.webp$/i.test(fallbackFile.name || "")) {
+        return { mime: "image/webp", ext: "webp" };
+      }
+      return { mime: "image/jpeg", ext: "jpg" };
+    }
+    if (fmt === "png") return { mime: "image/png", ext: "png" };
+    if (fmt === "webp") return { mime: "image/webp", ext: "webp" };
+    return { mime: "image/jpeg", ext: "jpg" };
+  }
+
+  /**
+   * Render a single PDF.js page onto a new HTMLCanvasElement.
+   */
+  async function renderPdfPageToCanvas(pdf, pageNum, scale, bgColor) {
+    const page = await pdf.getPage(pageNum);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(viewport.width));
+    canvas.height = Math.max(1, Math.round(viewport.height));
+    const ctx = canvas.getContext("2d");
+    if (bgColor !== null) {
+      ctx.fillStyle = bgColor || "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    return { canvas, viewport };
   }
 
   function canvasToBlob(canvas, mimeType, quality) {
@@ -278,6 +354,106 @@ window.ConverterEngine = (function () {
       return await canvasToBlob(c, "image/jpeg", 0.94);
     }
 
+    /**
+     * Inject a real little-endian APP1 Exif + GPS segment directly after SOI
+     * so sample testing for exif-remove demonstrates real metadata stripping.
+     */
+    async function injectSampleExif(jpegBlob) {
+      const src = new Uint8Array(await jpegBlob.arrayBuffer());
+      if (src.length < 2 || src[0] !== 0xff || src[1] !== 0xd8) return jpegBlob;
+
+      const enc = new TextEncoder();
+      const dataParts = [];
+      let dataCursor = 8 + (2 + 5 * 12 + 4) + (2 + 4 * 12 + 4); // header + IFD0 + GPS IFD = 128
+
+      function allocAscii(str) {
+        const b = enc.encode(str + "\0");
+        const off = dataCursor;
+        dataParts.push(b);
+        dataCursor += b.length;
+        return { count: b.length, off };
+      }
+      function allocRationals(pairs) {
+        const buf = new ArrayBuffer(pairs.length * 8);
+        const dv = new DataView(buf);
+        pairs.forEach(([num, den], idx) => {
+          dv.setUint32(idx * 8, num, true);
+          dv.setUint32(idx * 8 + 4, den, true);
+        });
+        const off = dataCursor;
+        dataParts.push(new Uint8Array(buf));
+        dataCursor += pairs.length * 8;
+        return { count: pairs.length, off };
+      }
+
+      const make = allocAscii("Apple");
+      const model = allocAscii("iPhone 15 Pro");
+      const software = allocAscii("LeafConvert Sample Cam");
+      const dt = allocAscii("2026:11:13 14:30:00");
+      const latVals = allocRationals([[37, 1], [33, 1], [5900, 100]]);
+      const lonVals = allocRationals([[126, 1], [58, 1], [4000, 100]]);
+      const gpsIfdOffset = 8 + (2 + 5 * 12 + 4); // 74
+
+      const tiff = new Uint8Array(dataCursor);
+      const tv = new DataView(tiff.buffer);
+      // TIFF Header ("II" little-endian, 0x002A, IFD0 @ 8)
+      tiff[0] = 0x49;
+      tiff[1] = 0x49;
+      tv.setUint16(2, 42, true);
+      tv.setUint32(4, 8, true);
+
+      function writeEntry(pos, tag, type, count, valOrOff) {
+        tv.setUint16(pos, tag, true);
+        tv.setUint16(pos + 2, type, true);
+        tv.setUint32(pos + 4, count, true);
+        tv.setUint32(pos + 8, valOrOff, true);
+      }
+
+      // IFD0: 5 entries
+      tv.setUint16(8, 5, true);
+      writeEntry(10, 0x010f, 2, make.count, make.off);
+      writeEntry(22, 0x0110, 2, model.count, model.off);
+      writeEntry(34, 0x0131, 2, software.count, software.off);
+      writeEntry(46, 0x0132, 2, dt.count, dt.off);
+      writeEntry(58, 0x8825, 4, 1, gpsIfdOffset);
+      tv.setUint32(70, 0, true); // next IFD = 0
+
+      // GPS IFD: 4 entries
+      tv.setUint16(gpsIfdOffset, 4, true);
+      writeEntry(gpsIfdOffset + 2, 0x0001, 2, 2, 0x004e); // "N\0"
+      writeEntry(gpsIfdOffset + 14, 0x0002, 5, latVals.count, latVals.off);
+      writeEntry(gpsIfdOffset + 26, 0x0003, 2, 2, 0x0045); // "E\0"
+      writeEntry(gpsIfdOffset + 38, 0x0004, 5, lonVals.count, lonVals.off);
+      tv.setUint32(gpsIfdOffset + 50, 0, true);
+
+      let writeOff = 128;
+      for (const part of dataParts) {
+        tiff.set(part, writeOff);
+        writeOff += part.length;
+      }
+
+      const app1PayloadLen = 2 + 6 + tiff.length;
+      const app1 = new Uint8Array(2 + app1PayloadLen);
+      app1[0] = 0xff;
+      app1[1] = 0xe1;
+      app1[2] = (app1PayloadLen >> 8) & 0xff;
+      app1[3] = app1PayloadLen & 0xff;
+      app1.set([0x45, 0x78, 0x69, 0x66, 0x00, 0x00], 4);
+      app1.set(tiff, 10);
+
+      const out = new Uint8Array(2 + app1.length + (src.length - 2));
+      out.set(src.subarray(0, 2), 0);
+      out.set(app1, 2);
+      out.set(src.subarray(2), 2 + app1.length);
+      return new Blob([out], { type: "image/jpeg" });
+    }
+
+    if (sampleType === "exif-photo") {
+      const rawBlob = await makeSampleCanvasBlob(1, "Sample Photo with GPS & EXIF", "#10b981", "#2563eb");
+      const exifBlob = await injectSampleExif(rawBlob);
+      return [new File([exifBlob], "sample-gps-photo.jpg", { type: "image/jpeg" })];
+    }
+
     if (sampleType === "images") {
       const b1 = await makeSampleCanvasBlob(1, "Sample Photo 01 (1200x800)", "#e5322d", "#f97316");
       const b2 = await makeSampleCanvasBlob(2, "Sample Photo 02 (1200x800)", "#2563eb", "#06b6d4");
@@ -371,22 +547,30 @@ window.ConverterEngine = (function () {
     return [singlePdf];
   }
 
-  // PDF 페이지 썸네일 추출 (organize-pdf 시각적 페이지 편집기용)
-  async function getPdfPageThumbnails(file) {
+  /**
+   * Extract PDF page thumbnails for organize-pdf & sign-pdf visual editors.
+   */
+  async function getPdfPageThumbnails(file, opts) {
     ensurePdfJsWorker();
+    const cfg = opts || {};
+    const limit = cfg.maxPreview || 40;
+    const requestedScale = cfg.thumbScale || 0;
     const pages = [];
 
     if (window.pdfjsLib) {
       const bytes = await file.arrayBuffer();
       const pdf = await window.pdfjsLib.getDocument({ data: bytes }).promise;
-      const maxPreview = Math.min(pdf.numPages, 40);
+      const maxPreview = Math.min(pdf.numPages, limit);
 
       for (let p = 1; p <= pdf.numPages; p++) {
         let thumbUrl = null;
         if (p <= maxPreview) {
           const page = await pdf.getPage(p);
           const unscaled = page.getViewport({ scale: 1 });
-          const targetScale = Math.min(0.45, 220 / Math.max(1, unscaled.width));
+          const targetScale =
+            requestedScale > 0
+              ? requestedScale
+              : Math.min(0.45, 220 / Math.max(1, unscaled.width));
           const viewport = page.getViewport({ scale: targetScale });
           const canvas = document.createElement("canvas");
           canvas.width = Math.max(60, Math.round(viewport.width));
@@ -395,7 +579,7 @@ window.ConverterEngine = (function () {
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           await page.render({ canvasContext: ctx, viewport }).promise;
-          thumbUrl = canvas.toDataURL("image/jpeg", 0.72);
+          thumbUrl = canvas.toDataURL("image/jpeg", requestedScale > 0.6 ? 0.86 : 0.72);
         }
         pages.push({
           originalIndex: p - 1,
@@ -431,12 +615,12 @@ window.ConverterEngine = (function () {
     ];
   }
 
-  // PDF -> 이미지 (JPG 또는 PNG)
+  /**
+   * PDF -> Image (JPG, PNG, WebP)
+   */
   async function convertPdfToImages(file, format, options, onProgress) {
     ensurePdfJsWorker();
-    const isPng = format === "png";
-    const mime = isPng ? "image/png" : "image/jpeg";
-    const ext = isPng ? "png" : "jpg";
+    const { mime, ext } = resolveOutputMime(format || options.targetFormat || "jpg");
     const scale = options.dpi === "300" ? 2.4 : 1.5;
     const quality = (Number(options.quality) || 90) / 100;
     const baseName = stripExt(file.name);
@@ -449,17 +633,7 @@ window.ConverterEngine = (function () {
 
       for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
         onProgress(Math.round(((pageNum - 1) / totalPages) * 90));
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        const { canvas } = await renderPdfPageToCanvas(pdf, pageNum, scale, "#ffffff");
         const blob = await canvasToBlob(canvas, mime, quality);
 
         results.push({
@@ -498,7 +672,56 @@ window.ConverterEngine = (function () {
     return results;
   }
 
-  // 여러 이미지 -> 단일 PDF
+  /**
+   * Rasterize a loaded PDF.js document into a brand-new unencrypted PDF Blob.
+   * Shared by compressPdf and unlockPdf.
+   */
+  async function rasterizePdfToNewDoc(srcPdf, renderScale, jpegQuality, onProgress) {
+    const totalPages = srcPdf.numPages;
+    if (window.PDFLib) {
+      const outPdf = await window.PDFLib.PDFDocument.create();
+      for (let p = 1; p <= totalPages; p++) {
+        if (onProgress) onProgress(Math.round(((p - 1) / totalPages) * 88));
+        const page = await srcPdf.getPage(p);
+        const origVp = page.getViewport({ scale: 1 });
+        const { canvas } = await renderPdfPageToCanvas(srcPdf, p, renderScale, "#ffffff");
+        const jpgBlob = await canvasToBlob(canvas, "image/jpeg", jpegQuality);
+        const embedded = await outPdf.embedJpg(await jpgBlob.arrayBuffer());
+        const outPage = outPdf.addPage([origVp.width, origVp.height]);
+        outPage.drawImage(embedded, {
+          x: 0,
+          y: 0,
+          width: origVp.width,
+          height: origVp.height
+        });
+      }
+      const bytes = await outPdf.save({ useObjectStreams: true });
+      return new Blob([bytes], { type: "application/pdf" });
+    }
+
+    const items = [];
+    for (let p = 1; p <= totalPages; p++) {
+      if (onProgress) onProgress(Math.round(((p - 1) / totalPages) * 88));
+      const page = await srcPdf.getPage(p);
+      const origVp = page.getViewport({ scale: 1 });
+      const { canvas } = await renderPdfPageToCanvas(srcPdf, p, renderScale, "#ffffff");
+      const blob = await canvasToBlob(canvas, "image/jpeg", jpegQuality);
+      items.push({
+        blob,
+        imgW: canvas.width,
+        imgH: canvas.height,
+        pageW: origVp.width,
+        pageH: origVp.height,
+        drawW: origVp.width,
+        drawH: origVp.height,
+        drawX: 0,
+        drawY: 0
+      });
+    }
+    return await buildPdfFromJpegBlobsFallback(items);
+  }
+
+  // 여러 이미지 -> 단일 PDF (HEIC 포함 지원)
   async function convertImagesToPdf(files, options, onProgress) {
     const marginMap = { none: 0, small: 24, large: 54 };
     const margin = marginMap[options.margin] !== undefined ? marginMap[options.margin] : 24;
@@ -508,7 +731,7 @@ window.ConverterEngine = (function () {
       const pdfDoc = await window.PDFLib.PDFDocument.create();
       for (let i = 0; i < files.length; i++) {
         onProgress(Math.round((i / files.length) * 90));
-        const img = await loadImageFromFile(files[i]);
+        const img = await loadNormalizedImage(files[i], "image/jpeg", 0.92);
         const canvas = document.createElement("canvas");
         canvas.width = img.naturalWidth || img.width;
         canvas.height = img.naturalHeight || img.height;
@@ -561,7 +784,7 @@ window.ConverterEngine = (function () {
     const jpegItems = [];
     for (let i = 0; i < files.length; i++) {
       onProgress(Math.round((i / files.length) * 90));
-      const img = await loadImageFromFile(files[i]);
+      const img = await loadNormalizedImage(files[i], "image/jpeg", 0.92);
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth || img.width;
       canvas.height = img.naturalHeight || img.height;
@@ -750,20 +973,123 @@ window.ConverterEngine = (function () {
     ];
   }
 
-  // PDF 전체 회전
-  async function rotatePdf(file, options, onProgress) {
+  /**
+   * PDF 용량 줄이기 (ObjectStream 재압축 + 해상도/JPEG 품질 최적화 + 목표 MB 이하 맞추기)
+   */
+  async function compressPdf(file, options, onProgress) {
+    ensurePdfJsWorker();
+    const origSize = file.size;
+    const bytes = await file.arrayBuffer();
+    const level = options.compressLevel || "balanced";
+    const targetMaxMb = Number(options.targetMaxMb) || 0;
+    const targetBytes = targetMaxMb > 0 ? targetMaxMb * 1024 * 1024 : 0;
+
+    const presets = {
+      high: { scale: 1.55, q: 0.84 },
+      balanced: { scale: 1.25, q: 0.66 },
+      extreme: { scale: 0.92, q: 0.44 }
+    };
+    const cfg = presets[level] || presets.balanced;
+
+    let repackBlob = null;
+    if (window.PDFLib) {
+      try {
+        const doc = await window.PDFLib.PDFDocument.load(bytes.slice(0));
+        const out = await doc.save({ useObjectStreams: true });
+        repackBlob = new Blob([out], { type: "application/pdf" });
+      } catch (_e) {
+        repackBlob = null;
+      }
+    }
+
+    let chosenBlob = repackBlob;
+    let pageCountLabel = "";
+
+    if (window.pdfjsLib) {
+      const pdf = await window.pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+      pageCountLabel = `${pdf.numPages} Pages · `;
+      let rasterBlob = await rasterizePdfToNewDoc(pdf, cfg.scale, cfg.q, onProgress);
+
+      if (targetBytes > 0 && rasterBlob.size > targetBytes) {
+        const fallbacks = [
+          { scale: 1.1, q: 0.56 },
+          { scale: 0.9, q: 0.42 },
+          { scale: 0.72, q: 0.32 },
+          { scale: 0.56, q: 0.24 }
+        ];
+        for (const fb of fallbacks) {
+          rasterBlob = await rasterizePdfToNewDoc(pdf, fb.scale, fb.q, onProgress);
+          if (rasterBlob.size <= targetBytes) break;
+        }
+      }
+
+      if (!chosenBlob || targetBytes > 0 || rasterBlob.size < chosenBlob.size) {
+        chosenBlob = rasterBlob;
+      }
+    }
+
+    if (!chosenBlob) {
+      throw new Error("PDF library is still loading. Please try again.");
+    }
+
+    if (targetBytes === 0 && origSize < chosenBlob.size) {
+      chosenBlob = new Blob([bytes], { type: "application/pdf" });
+    }
+
+    const diffPct = origSize > 0 ? Math.round((1 - chosenBlob.size / origSize) * 100) : 0;
+    const meta =
+      diffPct > 0
+        ? `${pageCountLabel}${formatBytes(origSize)} → ${formatBytes(chosenBlob.size)} (-${diffPct}%)`
+        : `${pageCountLabel}${formatBytes(chosenBlob.size)} (Optimal)`;
+
+    onProgress(100);
+    return [
+      {
+        name: `${stripExt(file.name)}_compressed.pdf`,
+        blob: chosenBlob,
+        size: chosenBlob.size,
+        previewUrl: null,
+        meta
+      }
+    ];
+  }
+
+  /**
+   * PDF 전자서명 · 도장 삽입 (sign-pdf)
+   */
+  async function signPdf(file, options, onProgress) {
     if (!window.PDFLib) {
       throw new Error("PDF library is still loading. Please try again.");
     }
-    const angle = parseInt(options.rotateAngle || "90", 10);
-    const bytes = await file.arrayBuffer();
-    const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
+    if (!options.signDataUrl) {
+      throw new Error("Please draw a signature or upload a stamp image first.");
+    }
+
+    onProgress(15);
+    const pngBytes = dataUrlToUint8Array(options.signDataUrl);
+    const pdfBytes = await file.arrayBuffer();
+    const pdfDoc = await window.PDFLib.PDFDocument.load(pdfBytes);
+    const sigImg = await pdfDoc.embedPng(pngBytes);
     const pages = pdfDoc.getPages();
 
-    pages.forEach((page, idx) => {
-      onProgress(Math.round((idx / pages.length) * 85));
-      const currentRotation = page.getRotation().angle || 0;
-      page.setRotation(window.PDFLib.degrees((currentRotation + angle) % 360));
+    const applyAll = Boolean(options.signAllPages);
+    const pageIndex = Math.max(0, Math.min(pages.length - 1, Number(options.signPageIndex) || 0));
+    const signX = Number.isFinite(Number(options.signX)) ? Number(options.signX) : 0.72;
+    const signY = Number.isFinite(Number(options.signY)) ? Number(options.signY) : 0.82;
+    const widthPct = Math.max(8, Math.min(70, Number(options.signWidthPct) || 24));
+
+    const targetIndices = applyAll ? pages.map((_, idx) => idx) : [pageIndex];
+    targetIndices.forEach((idx, n) => {
+      onProgress(20 + Math.round((n / Math.max(1, targetIndices.length)) * 65));
+      const page = pages[idx];
+      const { width, height } = page.getSize();
+      const drawW = width * (widthPct / 100);
+      const drawH = drawW * (sigImg.height / Math.max(1, sigImg.width));
+      const rawX = width * signX - drawW / 2;
+      const rawY = height * (1 - signY) - drawH / 2;
+      const x = Math.max(0, Math.min(width - drawW, rawX));
+      const y = Math.max(0, Math.min(height - drawH, rawY));
+      page.drawImage(sigImg, { x, y, width: drawW, height: drawH });
     });
 
     const outBytes = await pdfDoc.save();
@@ -771,11 +1097,107 @@ window.ConverterEngine = (function () {
     onProgress(100);
     return [
       {
-        name: `${stripExt(file.name)}_rotated_${angle}deg.pdf`,
+        name: `${stripExt(file.name)}_signed.pdf`,
         blob,
         size: blob.size,
         previewUrl: null,
-        meta: `${pages.length} Pages (+${angle}°) · ${formatBytes(blob.size)}`
+        meta: `${targetIndices.length} Signed Page(s) · ${formatBytes(blob.size)}`
+      }
+    ];
+  }
+
+  /**
+   * PDF 비밀번호 / 인쇄 제한 해제 (unlock-pdf)
+   */
+  async function unlockPdf(file, options, onProgress) {
+    ensurePdfJsWorker();
+    if (!window.pdfjsLib) {
+      throw new Error("PDF decoder library is still loading. Please try again.");
+    }
+    const bytes = await file.arrayBuffer();
+    const password = String(options.pdfPassword || "");
+
+    let pdf;
+    try {
+      pdf = await window.pdfjsLib.getDocument({ data: bytes.slice(0), password }).promise;
+    } catch (err) {
+      if (err && (err.name === "PasswordException" || /password/i.test(err.message || ""))) {
+        throw new Error(
+          password
+            ? "Incorrect PDF password. Please double-check and try again."
+            : "This PDF requires an open password. Please enter the password in the options box."
+        );
+      }
+      throw err;
+    }
+
+    const blob = await rasterizePdfToNewDoc(pdf, 2.0, 0.92, onProgress);
+    onProgress(100);
+    return [
+      {
+        name: `${stripExt(file.name)}_unlocked.pdf`,
+        blob,
+        size: blob.size,
+        previewUrl: null,
+        meta: `${pdf.numPages} Pages Unlocked · ${formatBytes(blob.size)}`
+      }
+    ];
+  }
+
+  /**
+   * PDF 텍스트 추출 -> TXT 저장 & 미리보기 (pdf-to-text)
+   */
+  async function extractPdfText(file, options, onProgress) {
+    ensurePdfJsWorker();
+    if (!window.pdfjsLib) {
+      throw new Error("PDF decoder library is still loading. Please try again.");
+    }
+    const bytes = await file.arrayBuffer();
+    const password = options.pdfPassword ? String(options.pdfPassword) : undefined;
+    const pdf = await window.pdfjsLib.getDocument({ data: bytes, password }).promise;
+    const sections = [];
+
+    for (let p = 1; p <= pdf.numPages; p++) {
+      onProgress(Math.round(((p - 1) / pdf.numPages) * 90));
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      const lines = [];
+      let currentLine = [];
+      let lastY = null;
+
+      for (const item of tc.items || []) {
+        const str = item.str || "";
+        const y = Array.isArray(item.transform) ? item.transform[5] : null;
+        if (lastY !== null && y !== null && Math.abs(y - lastY) > 4) {
+          if (currentLine.length) lines.push(currentLine.join(" ").trim());
+          currentLine = [];
+        }
+        if (str.trim()) currentLine.push(str.trim());
+        if (item.hasEOL) {
+          if (currentLine.length) lines.push(currentLine.join(" ").trim());
+          currentLine = [];
+          lastY = null;
+        } else if (y !== null) {
+          lastY = y;
+        }
+      }
+      if (currentLine.length) lines.push(currentLine.join(" ").trim());
+
+      const pageBody = lines.filter(Boolean).join("\n");
+      sections.push(`=== Page ${p} / ${pdf.numPages} ===\n${pageBody}`);
+    }
+
+    const fullText = sections.join("\n\n").trim() || "(No selectable text found. This PDF may be scanned images.)";
+    const blob = new Blob([fullText], { type: "text/plain;charset=utf-8" });
+    onProgress(100);
+    return [
+      {
+        name: `${stripExt(file.name)}.txt`,
+        blob,
+        size: blob.size,
+        previewUrl: null,
+        textPreview: fullText,
+        meta: `${pdf.numPages} Pages · ${fullText.length.toLocaleString()} chars · ${formatBytes(blob.size)}`
       }
     ];
   }
@@ -876,62 +1298,427 @@ window.ConverterEngine = (function () {
     ];
   }
 
-  // PDF 페이지 번호 매기기
-  async function pageNumbersPdf(file, options, onProgress) {
-    if (!window.PDFLib) {
-      throw new Error("PDF library is still loading. Please try again.");
+  /**
+   * Read ASCII string safely from TIFF buffer.
+   */
+  function readTiffAscii(bytes, pos, count) {
+    const end = Math.min(bytes.length, pos + Math.max(0, count));
+    let s = "";
+    for (let i = pos; i < end; i++) {
+      const ch = bytes[i];
+      if (ch === 0) break;
+      if (ch >= 32 && ch < 127) s += String.fromCharCode(ch);
     }
-    const pos = options.pageNumPos || "bottom-center";
-    const fmt = options.pageNumFormat || "of";
-    const startNum = Math.max(1, parseInt(options.pageNumStart || "1", 10) || 1);
-    const fontSize = 12;
+    return s.trim();
+  }
 
-    const bytes = await file.arrayBuffer();
-    const pdfDoc = await window.PDFLib.PDFDocument.load(bytes);
-    const font = await pdfDoc.embedFont(window.PDFLib.StandardFonts.HelveticaBold);
-    const pages = pdfDoc.getPages();
-    const totalDisplayed = pages.length + startNum - 1;
+  /**
+   * Parse TIFF IFD0 / ExifIFD / GPS IFD tags cleanly without mutating image bytes.
+   */
+  function parseTiffExifTags(bytes, tiffOffset, limitEnd) {
+    const tags = [];
+    let hasGps = false;
+    if (tiffOffset + 8 > limitEnd) return { tags, hasGps };
+    const b0 = bytes[tiffOffset];
+    const b1 = bytes[tiffOffset + 1];
+    const le = b0 === 0x49 && b1 === 0x49;
+    const be = b0 === 0x4d && b1 === 0x4d;
+    if (!le && !be) return { tags, hasGps };
 
-    pages.forEach((page, idx) => {
-      onProgress(Math.round((idx / pages.length) * 85));
-      const current = startNum + idx;
-      let label = String(current);
-      if (fmt === "of") label = `${current} / ${totalDisplayed}`;
-      else if (fmt === "dash") label = `- ${current} -`;
-      else if (fmt === "page") label = `Page ${current}`;
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    if (view.getUint16(tiffOffset + 2, le) !== 42) return { tags, hasGps };
+    const ifd0Rel = view.getUint32(tiffOffset + 4, le);
 
-      const { width, height } = page.getSize();
-      const textWidth = font.widthOfTextAtSize(label, fontSize);
-      const margin = 28;
+    const typeSizes = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 7: 1, 9: 4, 10: 8 };
 
-      let x = (width - textWidth) / 2;
-      let y = margin;
-      if (pos === "bottom-right") x = width - textWidth - margin;
-      else if (pos === "bottom-left") x = margin;
-      else if (pos === "top-right") {
-        x = width - textWidth - margin;
-        y = height - margin - fontSize;
+    function readIfdMap(relOff) {
+      const abs = tiffOffset + relOff;
+      const map = {};
+      if (relOff <= 0 || abs + 2 > limitEnd) return map;
+      const count = Math.min(256, view.getUint16(abs, le));
+      for (let i = 0; i < count; i++) {
+        const entryPos = abs + 2 + i * 12;
+        if (entryPos + 12 > limitEnd) break;
+        const tag = view.getUint16(entryPos, le);
+        const type = view.getUint16(entryPos + 2, le);
+        const cnt = view.getUint32(entryPos + 4, le);
+        const unitSize = typeSizes[type] || 1;
+        const totalSize = cnt * unitSize;
+        const valPos = totalSize <= 4 ? entryPos + 8 : tiffOffset + view.getUint32(entryPos + 8, le);
+        if (valPos < tiffOffset || valPos + Math.min(totalSize, 4) > limitEnd) continue;
+
+        let val = null;
+        if (type === 2) {
+          val = readTiffAscii(bytes, valPos, Math.min(cnt, limitEnd - valPos));
+        } else if (type === 3) {
+          val = view.getUint16(valPos, le);
+        } else if (type === 4) {
+          val = view.getUint32(valPos, le);
+        } else if ((type === 5 || type === 10) && cnt >= 1) {
+          const arr = [];
+          const maxC = Math.min(cnt, 4);
+          for (let j = 0; j < maxC; j++) {
+            const p = valPos + j * 8;
+            if (p + 8 > limitEnd) break;
+            const num = type === 10 ? view.getInt32(p, le) : view.getUint32(p, le);
+            const den = type === 10 ? view.getInt32(p + 4, le) : view.getUint32(p + 4, le);
+            arr.push(den ? num / den : 0);
+          }
+          val = cnt === 1 ? arr[0] : arr;
+        }
+        map[tag] = val;
+      }
+      return map;
+    }
+
+    const ifd0 = readIfdMap(ifd0Rel);
+    const makeModel = [ifd0[0x010f], ifd0[0x0110]].filter(Boolean).join(" ").trim();
+    if (makeModel) tags.push({ label: "Camera", value: makeModel });
+    if (ifd0[0x0131]) tags.push({ label: "Software", value: String(ifd0[0x0131]) });
+    if (ifd0[0x0132]) tags.push({ label: "DateTime", value: String(ifd0[0x0132]) });
+
+    if (ifd0[0x8769]) {
+      const exif = readIfdMap(ifd0[0x8769]);
+      if (exif[0x9003]) tags.push({ label: "DateTaken", value: String(exif[0x9003]) });
+      if (exif[0xa434]) tags.push({ label: "Lens", value: String(exif[0xa434]) });
+      const shot = [];
+      if (exif[0x829d]) shot.push(`f/${Number(exif[0x829d]).toFixed(1)}`);
+      if (exif[0x829a]) shot.push(exif[0x829a] < 1 ? `1/${Math.round(1 / exif[0x829a])}s` : `${exif[0x829a]}s`);
+      if (exif[0x8827]) shot.push(`ISO ${exif[0x8827]}`);
+      if (shot.length) tags.push({ label: "Exposure", value: shot.join(" · ") });
+    }
+
+    if (ifd0[0x8825]) {
+      const gps = readIfdMap(ifd0[0x8825]);
+      const latArr = Array.isArray(gps[0x0002]) ? gps[0x0002] : null;
+      const lonArr = Array.isArray(gps[0x0004]) ? gps[0x0004] : null;
+      if (latArr && latArr.length >= 3 && lonArr && lonArr.length >= 3) {
+        hasGps = true;
+        const lat = (latArr[0] + latArr[1] / 60 + latArr[2] / 3600) * (gps[0x0001] === "S" ? -1 : 1);
+        const lon = (lonArr[0] + lonArr[1] / 60 + lonArr[2] / 3600) * (gps[0x0003] === "W" ? -1 : 1);
+        tags.push({
+          label: "GPS",
+          value: `${lat.toFixed(5)}°, ${lon.toFixed(5)}°`
+        });
+      } else if (Object.keys(gps).length > 0) {
+        hasGps = true;
+        tags.push({ label: "GPS", value: "GPS tags present" });
+      }
+    }
+
+    return { tags, hasGps };
+  }
+
+  /**
+   * Inspect EXIF/GPS/XMP/IPTC metadata in JPEG or PNG files without decoding pixels.
+   */
+  async function inspectImageMetadata(file) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const tags = [];
+    let hasMetadata = false;
+    let hasGps = false;
+
+    // JPEG
+    if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+      let pos = 2;
+      while (pos + 2 <= bytes.length) {
+        while (pos < bytes.length && bytes[pos] === 0xff) pos++;
+        if (pos >= bytes.length) break;
+        const marker = bytes[pos++];
+        if (marker === 0xda || marker === 0xd9) break;
+        if ((marker >= 0xd0 && marker <= 0xd7) || marker === 0x01 || marker === 0x00) continue;
+        if (pos + 2 > bytes.length) break;
+        const segLen = view.getUint16(pos, false);
+        if (segLen < 2 || pos + segLen > bytes.length) break;
+        const dataStart = pos + 2;
+        const dataEnd = pos + segLen;
+
+        if (marker === 0xe1 && dataStart + 6 <= dataEnd) {
+          const hdr = readTiffAscii(bytes, dataStart, 6);
+          if (hdr === "Exif") {
+            hasMetadata = true;
+            const parsed = parseTiffExifTags(bytes, dataStart + 6, dataEnd);
+            tags.push(...parsed.tags);
+            if (parsed.hasGps) hasGps = true;
+            if (parsed.tags.length === 0) tags.push({ label: "EXIF", value: `${segLen} bytes` });
+          } else {
+            hasMetadata = true;
+            tags.push({ label: "XMP / APP1", value: `${segLen} bytes` });
+          }
+        } else if (marker === 0xed) {
+          hasMetadata = true;
+          tags.push({ label: "IPTC / IRB", value: `${segLen} bytes` });
+        } else if (marker === 0xfe) {
+          hasMetadata = true;
+          tags.push({ label: "JPEG Comment", value: `${segLen} bytes` });
+        }
+        pos = dataEnd;
+      }
+      return { hasMetadata, hasGps, tags };
+    }
+
+    // PNG
+    if (bytes.length > 16 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+      let pos = 8;
+      while (pos + 12 <= bytes.length) {
+        const len = view.getUint32(pos, false);
+        const type = String.fromCharCode(bytes[pos + 4], bytes[pos + 5], bytes[pos + 6], bytes[pos + 7]);
+        const nextPos = pos + 12 + len;
+        if (nextPos > bytes.length) break;
+        if (type === "eXIf" || type === "tEXt" || type === "zTXt" || type === "iTXt") {
+          hasMetadata = true;
+          tags.push({ label: `PNG ${type}`, value: `${len} bytes` });
+        }
+        if (type === "IEND") break;
+        pos = nextPos;
+      }
+      return { hasMetadata, hasGps, tags };
+    }
+
+    return { hasMetadata: false, hasGps: false, tags: [] };
+  }
+
+  /**
+   * Losslessly strip EXIF / XMP / IPTC / COM segments from a JPEG Uint8Array.
+   */
+  function stripJpegMetadataLossless(bytes) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const chunks = [bytes.subarray(0, 2)];
+    let pos = 2;
+
+    while (pos + 1 < bytes.length) {
+      if (bytes[pos] !== 0xff) break;
+      const segStart = pos;
+      while (pos < bytes.length && bytes[pos] === 0xff) pos++;
+      if (pos >= bytes.length) break;
+      const marker = bytes[pos++];
+
+      if (marker === 0xda) {
+        chunks.push(bytes.subarray(segStart));
+        pos = bytes.length;
+        break;
+      }
+      if (marker === 0xd9) {
+        chunks.push(bytes.subarray(segStart, pos));
+        break;
+      }
+      if ((marker >= 0xd0 && marker <= 0xd7) || marker === 0x01 || marker === 0x00) {
+        chunks.push(bytes.subarray(segStart, pos));
+        continue;
+      }
+      if (pos + 2 > bytes.length) break;
+      const segLen = view.getUint16(pos, false);
+      if (segLen < 2 || pos + segLen > bytes.length) break;
+      const segEnd = pos + segLen;
+
+      let keep = true;
+      if (marker === 0xe1 || marker === 0xed || marker === 0xec || marker === 0xfe) {
+        keep = false;
+      } else if (marker === 0xe2) {
+        const sig = readTiffAscii(bytes, pos + 2, 12);
+        keep = sig === "ICC_PROFILE";
+      } else if (marker >= 0xe3 && marker <= 0xef) {
+        keep = false;
       }
 
-      page.drawText(label, {
-        x,
-        y,
-        size: fontSize,
-        font,
-        color: window.PDFLib.rgb(0.25, 0.3, 0.38)
-      });
-    });
+      if (keep) {
+        chunks.push(bytes.subarray(segStart, segEnd));
+      }
+      pos = segEnd;
+    }
 
-    const outBytes = await pdfDoc.save();
-    const blob = new Blob([outBytes], { type: "application/pdf" });
+    const totalLen = chunks.reduce((s, c) => s + c.length, 0);
+    const out = new Uint8Array(totalLen);
+    let writePos = 0;
+    for (const c of chunks) {
+      out.set(c, writePos);
+      writePos += c.length;
+    }
+    return out;
+  }
+
+  /**
+   * Losslessly strip PNG metadata chunks (eXIf, tEXt, zTXt, iTXt).
+   */
+  function stripPngMetadataLossless(bytes) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const chunks = [bytes.subarray(0, 8)];
+    let pos = 8;
+
+    while (pos + 12 <= bytes.length) {
+      const len = view.getUint32(pos, false);
+      const type = String.fromCharCode(bytes[pos + 4], bytes[pos + 5], bytes[pos + 6], bytes[pos + 7]);
+      const nextPos = pos + 12 + len;
+      if (nextPos > bytes.length) break;
+      if (type !== "eXIf" && type !== "tEXt" && type !== "zTXt" && type !== "iTXt") {
+        chunks.push(bytes.subarray(pos, nextPos));
+      }
+      pos = nextPos;
+      if (type === "IEND") break;
+    }
+
+    const totalLen = chunks.reduce((s, c) => s + c.length, 0);
+    const out = new Uint8Array(totalLen);
+    let writePos = 0;
+    for (const c of chunks) {
+      out.set(c, writePos);
+      writePos += c.length;
+    }
+    return out;
+  }
+
+  /**
+   * EXIF 메타데이터 · 위치정보(GPS) 무손실 제거 (exif-remove)
+   */
+  async function removeExifMetadata(files, _options, onProgress) {
+    const results = [];
+    for (let i = 0; i < files.length; i++) {
+      onProgress(Math.round((i / files.length) * 90));
+      const file = files[i];
+      const baseName = stripExt(file.name);
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const info = await inspectImageMetadata(file);
+
+      let outBlob;
+      let ext;
+      if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+        const cleanBytes = stripJpegMetadataLossless(bytes);
+        outBlob = new Blob([cleanBytes], { type: "image/jpeg" });
+        ext = "jpg";
+      } else if (bytes.length > 16 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+        const cleanBytes = stripPngMetadataLossless(bytes);
+        outBlob = new Blob([cleanBytes], { type: "image/png" });
+        ext = "png";
+      } else {
+        const img = await loadNormalizedImage(file, "image/jpeg", 0.94);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const resolved = resolveOutputMime("original", file);
+        outBlob = await canvasToBlob(canvas, resolved.mime, 0.94);
+        ext = resolved.ext;
+      }
+
+      const tagSummary = info.tags.length > 0 ? `${info.tags.length} tags stripped` : "Clean (0 metadata)";
+      results.push({
+        name: `${baseName}_clean.${ext}`,
+        blob: outBlob,
+        size: outBlob.size,
+        previewUrl: URL.createObjectURL(outBlob),
+        meta: `${tagSummary} · ${formatBytes(file.size)} → ${formatBytes(outBlob.size)}`
+      });
+    }
+    onProgress(100);
+    return results;
+  }
+
+  /**
+   * 이미지 자르기 · 90° 회전 · 좌우/상하 반전 (crop-image)
+   */
+  async function cropImage(files, options, onProgress) {
+    const file = files[0];
+    onProgress(20);
+    const rotDeg = ((Number(options.cropRotate) || 0) % 360 + 360) % 360;
+    const flipH = Boolean(options.cropFlipH);
+    const flipV = Boolean(options.cropFlipV);
+    const cx = Math.max(0, Math.min(0.95, Number(options.cropX) || 0));
+    const cy = Math.max(0, Math.min(0.95, Number(options.cropY) || 0));
+    const cw = Math.max(0.05, Math.min(1 - cx, Number(options.cropW) || 1));
+    const ch = Math.max(0.05, Math.min(1 - cy, Number(options.cropH) || 1));
+
+    const { mime, ext } = resolveOutputMime(options.targetFormat || "original", file);
+    const img = await loadNormalizedImage(file, mime, 0.94);
+
+    let fullCanvas;
+    if (window.VisualEditors && window.VisualEditors.buildTransformedCanvas) {
+      fullCanvas = window.VisualEditors.buildTransformedCanvas(img, rotDeg, flipH, flipV, 0).canvas;
+    } else {
+      const w = img.naturalWidth || img.width;
+      const h = img.naturalHeight || img.height;
+      fullCanvas = document.createElement("canvas");
+      fullCanvas.width = w;
+      fullCanvas.height = h;
+      fullCanvas.getContext("2d").drawImage(img, 0, 0);
+    }
+
+    onProgress(65);
+    const sx = Math.round(cx * fullCanvas.width);
+    const sy = Math.round(cy * fullCanvas.height);
+    const sw = Math.max(1, Math.round(cw * fullCanvas.width));
+    const sh = Math.max(1, Math.round(ch * fullCanvas.height));
+
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = sw;
+    outCanvas.height = sh;
+    const ctx = outCanvas.getContext("2d");
+    if (mime === "image/jpeg") {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, sw, sh);
+    }
+    ctx.drawImage(fullCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
+
+    const blob = await canvasToBlob(outCanvas, mime, 0.92);
     onProgress(100);
     return [
       {
-        name: `${stripExt(file.name)}_numbered.pdf`,
+        name: `${stripExt(file.name)}_cropped.${ext}`,
         blob,
         size: blob.size,
-        previewUrl: null,
-        meta: `${pages.length} Pages · ${formatBytes(blob.size)}`
+        previewUrl: URL.createObjectURL(blob),
+        meta: `${sw}×${sh}px · ${formatBytes(blob.size)}`
+      }
+    ];
+  }
+
+  /**
+   * 사진 모자이크 · 블러 · 검정 마스킹 (blur-image)
+   */
+  async function blurImage(files, options, onProgress) {
+    const file = files[0];
+    const masks = Array.isArray(options.blurMasks) ? options.blurMasks : [];
+    onProgress(20);
+    const { mime, ext } = resolveOutputMime(options.targetFormat || "original", file);
+    const img = await loadNormalizedImage(file, mime, 0.94);
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+
+    const srcCanvas = document.createElement("canvas");
+    srcCanvas.width = w;
+    srcCanvas.height = h;
+    srcCanvas.getContext("2d").drawImage(img, 0, 0, w, h);
+
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = w;
+    outCanvas.height = h;
+    const ctx = outCanvas.getContext("2d");
+    if (mime === "image/jpeg") {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.drawImage(srcCanvas, 0, 0);
+
+    onProgress(60);
+    if (masks.length > 0 && window.VisualEditors && window.VisualEditors.applyMaskRegion) {
+      masks.forEach((m) => window.VisualEditors.applyMaskRegion(ctx, srcCanvas, m));
+    } else if (masks.length > 0) {
+      masks.forEach((m) => {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(m.x * w, m.y * h, m.w * w, m.h * h);
+      });
+    }
+
+    const blob = await canvasToBlob(outCanvas, mime, 0.92);
+    onProgress(100);
+    return [
+      {
+        name: `${stripExt(file.name)}_masked.${ext}`,
+        blob,
+        size: blob.size,
+        previewUrl: URL.createObjectURL(blob),
+        meta: `${masks.length} masked · ${w}×${h}px · ${formatBytes(blob.size)}`
       }
     ];
   }
@@ -963,7 +1750,7 @@ window.ConverterEngine = (function () {
     for (let i = 0; i < files.length; i++) {
       onProgress(Math.round((i / files.length) * 90));
       const file = files[i];
-      const img = await loadImageFromFile(file);
+      const img = await loadNormalizedImage(file, mime, 0.92);
       const origSize = file.size;
 
       const scales = [1.0, 0.85, 0.7, 0.55, 0.42, 0.3, 0.2];
@@ -1023,7 +1810,7 @@ window.ConverterEngine = (function () {
     const loaded = [];
     for (let i = 0; i < files.length; i++) {
       onProgress(Math.round((i / files.length) * 45));
-      const img = await loadImageFromFile(files[i]);
+      const img = await loadNormalizedImage(files[i], mime, 0.92);
       loaded.push({
         img,
         w: img.naturalWidth || img.width,
@@ -1111,28 +1898,14 @@ window.ConverterEngine = (function () {
 
     for (let i = 0; i < files.length; i++) {
       onProgress(Math.round((i / files.length) * 90));
-      let currentFile = files[i];
+      const currentFile = files[i];
       const origSize = currentFile.size;
       const baseName = stripExt(currentFile.name);
-
-      const isHeic =
-        /\.heic$|\.heif$/i.test(currentFile.name) ||
-        currentFile.type === "image/heic" ||
-        currentFile.type === "image/heif";
-
-      if (isHeic) {
-        if (!window.heic2any) {
-          throw new Error("HEIC decoder library could not be loaded. Please check your internet connection.");
-        }
-        const convertedBlob = await window.heic2any({
-          blob: currentFile,
-          toType: targetFormat === "png" ? "image/png" : "image/jpeg",
-          quality
-        });
-        currentFile = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
-      }
-
-      const img = await loadImageFromFile(currentFile);
+      const img = await loadNormalizedImage(
+        currentFile,
+        targetFormat === "png" ? "image/png" : "image/jpeg",
+        quality
+      );
       let outW = img.naturalWidth || img.width;
       let outH = img.naturalHeight || img.height;
 
@@ -1147,28 +1920,14 @@ window.ConverterEngine = (function () {
       canvas.height = outH;
       const ctx = canvas.getContext("2d");
 
-      let mime = "image/jpeg";
-      let ext = "jpg";
-      if (toolId === "compress-image") {
-        if (currentFile.type === "image/webp") {
-          mime = "image/webp";
-          ext = "webp";
-        } else {
-          mime = "image/jpeg";
-          ext = "jpg";
-        }
-      } else {
-        if (targetFormat === "png") {
-          mime = "image/png";
-          ext = "png";
-        } else if (targetFormat === "webp") {
-          mime = "image/webp";
-          ext = "webp";
-        } else {
-          mime = "image/jpeg";
-          ext = "jpg";
-        }
-      }
+      const resolved =
+        toolId === "compress-image"
+          ? currentFile.type === "image/webp"
+            ? { mime: "image/webp", ext: "webp" }
+            : { mime: "image/jpeg", ext: "jpg" }
+          : resolveOutputMime(targetFormat, currentFile);
+      const mime = resolved.mime;
+      const ext = resolved.ext;
 
       if (mime === "image/jpeg") {
         ctx.fillStyle = "#ffffff";
@@ -1202,10 +1961,10 @@ window.ConverterEngine = (function () {
       throw new Error("Please select at least one file first.");
     }
     switch (toolId) {
+      case "compress-pdf":
+        return await compressPdf(files[0], options, onProgress);
       case "pdf-to-jpg":
-        return await convertPdfToImages(files[0], "jpg", options, onProgress);
-      case "pdf-to-png":
-        return await convertPdfToImages(files[0], "png", options, onProgress);
+        return await convertPdfToImages(files[0], options.targetFormat || "jpg", options, onProgress);
       case "jpg-to-pdf":
         return await convertImagesToPdf(files, options, onProgress);
       case "merge-pdf":
@@ -1214,16 +1973,24 @@ window.ConverterEngine = (function () {
         return await splitPdf(files[0], options, onProgress);
       case "organize-pdf":
         return await organizePdf(files[0], options, onProgress);
-      case "rotate-pdf":
-        return await rotatePdf(files[0], options, onProgress);
+      case "sign-pdf":
+        return await signPdf(files[0], options, onProgress);
+      case "unlock-pdf":
+        return await unlockPdf(files[0], options, onProgress);
       case "watermark-pdf":
         return await watermarkPdf(files[0], options, onProgress);
-      case "page-numbers-pdf":
-        return await pageNumbersPdf(files[0], options, onProgress);
+      case "pdf-to-text":
+        return await extractPdfText(files[0], options, onProgress);
       case "compress-kb":
         return await compressToTargetKb(files, options, onProgress);
+      case "crop-image":
+        return await cropImage(files, options, onProgress);
       case "stitch-images":
         return await stitchImages(files, options, onProgress);
+      case "exif-remove":
+        return await removeExifMetadata(files, options, onProgress);
+      case "blur-image":
+        return await blurImage(files, options, onProgress);
       case "compress-image":
       case "webp-to-jpg":
       case "heic-to-jpg":
@@ -1238,6 +2005,8 @@ window.ConverterEngine = (function () {
     createZipBlob,
     generateSampleFiles,
     getPdfPageThumbnails,
+    inspectImageMetadata,
+    loadNormalizedImage,
     formatBytes
   };
 })();

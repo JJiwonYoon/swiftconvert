@@ -2463,6 +2463,254 @@ button {
   font-size: 0.88rem;
 }
 
+/* Visual Editors (Crop, Blur, Sign PDF, EXIF Report, Bulk Organizer) */
+.organizer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.visual-editor-section {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.editor-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.editor-dim-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.ed-btn {
+  padding: 6px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.ed-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.ed-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.ed-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+  margin: 0 4px;
+}
+
+.ed-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+
+.ed-color.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(229, 50, 45, 0.25);
+}
+
+.editor-canvas-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: repeating-conic-gradient(rgba(148, 163, 184, 0.14) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  overflow: hidden;
+}
+
+.editor-canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+.editor-hint {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sign-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(250px, 1fr) minmax(260px, 1.2fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.sign-pad-canvas {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  background: #ffffff;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  touch-action: none;
+  cursor: crosshair;
+  display: block;
+}
+
+.sign-controls-mini {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--text-main);
+}
+
+.sign-controls-mini select {
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+}
+
+.exif-report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exif-row {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+.exif-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+}
+
+.exif-pill {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.exif-pill.warn {
+  background: rgba(239, 68, 68, 0.14);
+  color: #dc2626;
+}
+
+.exif-pill.safe {
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+}
+
+.exif-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.exif-tag {
+  font-size: 0.76rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.text-preview-box {
+  margin-top: 12px;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.text-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.text-preview-box pre {
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-main);
+}
+
+@media (max-width: 760px) {
+  .sign-editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .scroll-top-btn {
     right: 10px;

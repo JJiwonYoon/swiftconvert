@@ -24,6 +24,7 @@ JS_FILES = (
     "tools-seo.js",
     "i18n.js",
     "converters.js",
+    "editors.js",
     "feedback.js",
     "app.js",
 )

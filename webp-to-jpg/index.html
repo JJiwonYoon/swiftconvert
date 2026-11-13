@@ -13,7 +13,7 @@
   <meta property="og:site_name" content="LeafConvert" />
   <meta property="og:title" content="WebP JPG 변환 · PNG 변환 무료 - 웹이미지 호환 포맷 일괄 변경 | LeafConvert" />
   <meta property="og:description" content="웹에서 저장한 WebP 파일이 한글/PPT/포토샵에서 안 열릴 때? JPG 또는 PNG로 1초 만에 일괄 변환하세요." />
-  <link rel="stylesheet" href="../css/style.css?v=4a02c6a6" />
+  <link rel="stylesheet" href="../css/style.css?v=76f28c2d" />
 
   <!-- 구조화 데이터 (Google 검색 리치 스니펫용 JSON-LD) -->
   <script type="application/ld+json">
@@ -77,12 +77,12 @@
       </a>
 
       <nav class="nav-links" aria-label="Quick Tools">
-        <button class="nav-btn" data-nav-tool="pdf-to-jpg">PDF JPG 변환</button>
+        <button class="nav-btn" data-nav-tool="compress-pdf">PDF 압축</button>
+        <button class="nav-btn" data-nav-tool="pdf-to-jpg">PDF JPG/PNG</button>
         <button class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기</button>
-        <button class="nav-btn" data-nav-tool="organize-pdf">PDF 페이지삭제</button>
+        <button class="nav-btn" data-nav-tool="sign-pdf">PDF 서명</button>
         <button class="nav-btn" data-nav-tool="compress-kb">200KB 압축</button>
-        <button class="nav-btn" data-nav-tool="heic-to-jpg">HEIC 변환</button>
-        <button class="nav-btn" data-nav-tool="stitch-images">사진 이어붙이기</button>
+        <button class="nav-btn" data-nav-tool="exif-remove">EXIF 삭제</button>
       </nav>
 
       <div class="header-controls">
@@ -124,13 +124,13 @@
         </div>
 
         <div class="category-tabs">
-          <button class="cat-tab active" data-cat="all" id="catAllBtn">전체 도구 (15)</button>
-          <button class="cat-tab" data-cat="pdf" id="catPdfBtn">PDF 변환 · 편집 (9)</button>
-          <button class="cat-tab" data-cat="image" id="catImageBtn">이미지 변환 · 압축 (6)</button>
+          <button class="cat-tab active" data-cat="all" id="catAllBtn">전체 도구 (19)</button>
+          <button class="cat-tab" data-cat="pdf" id="catPdfBtn">PDF 변환 · 편집 (10)</button>
+          <button class="cat-tab" data-cat="image" id="catImageBtn">이미지 변환 · 편집 (9)</button>
         </div>
       </div>
 
-      <!-- 15종 변환기 카드 그리드 -->
+      <!-- 큐레이션 19종 변환기 카드 그리드 -->
       <div class="tools-grid" id="toolsGrid"></div>
 
       <!-- 인피드 광고 슬롯 -->
@@ -188,14 +188,21 @@
           <div class="organizer-section" id="organizerSection" style="display:none;">
             <div class="organizer-header">
               <div>
-                <strong id="orgTitle">🧩 PDF 페이지 시각적 편집기</strong>
+                <strong id="orgTitle">🧩 PDF 페이지 편집기 (삭제·순서·회전)</strong>
                 <div id="orgHint" style="font-size:0.83rem;color:var(--text-muted);">
-                  각 페이지의 순서 이동(◀ ▶), 회전(↻), 삭제(🗑️)를 클릭한 뒤 변환 버튼을 누르세요.
+                  페이지별 순서 이동(◀ ▶), 회전(↻), 삭제(🗑️) 또는 전체 90° 회전 후 변환하세요.
                 </div>
+              </div>
+              <div class="org-header-actions">
+                <button type="button" class="ed-btn" id="orgBulkRotateBtn">↻ 전체 +90° 회전</button>
+                <button type="button" class="ed-btn" id="orgResetBtn">↺ 초기화</button>
               </div>
             </div>
             <div class="organizer-grid" id="organizerGrid"></div>
           </div>
+
+          <!-- 시각적 캔버스 편집기 & 리포트 (crop-image, blur-image, sign-pdf, exif-remove) -->
+          <div class="visual-editor-section" id="visualEditorSection" style="display:none;"></div>
 
           <!-- 변환 옵션 패널 -->
           <div class="options-panel" id="optionsPanel" style="display:none;">
@@ -309,10 +316,11 @@
   <script>window.INITIAL_TOOL_ID = "webp-to-jpg";</script>
   <script src="../js/ads-config.js?v=4625f86d"></script>
   <script src="../js/feedback-config.js?v=5d2f9c90"></script>
-  <script src="../js/tools-seo.js?v=8883b085"></script>
-  <script src="../js/i18n.js?v=2e6a8769"></script>
-  <script src="../js/converters.js?v=69f25dbb"></script>
-  <script src="../js/feedback.js?v=9d67dc74"></script>
-  <script src="../js/app.js?v=9db689aa"></script>
+  <script src="../js/tools-seo.js?v=6ef60756"></script>
+  <script src="../js/i18n.js?v=57bb7f46"></script>
+  <script src="../js/converters.js?v=21e106d3"></script>
+  <script src="../js/editors.js?v=46bd16c0"></script>
+  <script src="../js/feedback.js?v=a73f98f1"></script>
+  <script src="../js/app.js?v=f65323e8"></script>
 </body>
 </html>
