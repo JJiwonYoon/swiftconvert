@@ -950,15 +950,18 @@
 
     let sentRemotely = false;
     let endpointError = false;
+    let endpointStatus = 0;
     const endpoint = cfg.requestDelivery && cfg.requestDelivery.endpoint;
 
     if (isSafeHttpUrl(endpoint)) {
       try {
+        const authorToken = getUserToken();
         const res = await fetch(endpoint.trim(), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json"
+            Accept: "application/json",
+            "X-User-Token": authorToken
           },
           body: JSON.stringify({
             ticketId: ticket.id,
@@ -968,9 +971,11 @@
             title: ticket.title,
             details: ticket.details,
             contact: ticket.contact,
-            env: ticket.env
+            env: ticket.env,
+            authorToken
           })
         });
+        endpointStatus = res.status || 0;
         if (res.ok) {
           ticket.deliveryStatus = "sent";
           sentRemotely = true;
@@ -1011,7 +1016,14 @@
       }
     }
 
-    return { ticket, sentRemotely, endpointError };
+    return { ticket, sentRemotely, endpointError, endpointStatus };
+  }
+
+  function getRequestSubmitToast(result, s) {
+    if (result.endpointError) {
+      return result.endpointStatus === 429 ? s.toastCommentRateLimit : s.chatEndpointFailed;
+    }
+    return result.sentRemotely ? s.reqSubmittedSent : s.reqSubmittedLocal;
   }
 
   function renderRequestsListHtml() {
@@ -1575,11 +1587,7 @@
           crossPost: Boolean((document.getElementById("reqCrossPostChk") || {}).checked)
         });
 
-        if (result.endpointError) {
-          notifyToast(s.chatEndpointFailed);
-        } else {
-          notifyToast(result.sentRemotely ? s.reqSubmittedSent : s.reqSubmittedLocal);
-        }
+        notifyToast(getRequestSubmitToast(result, s));
         renderCommunitySection();
       });
     }
@@ -2027,10 +2035,13 @@
         fbState.chatInlineRequest = false;
         fbState.chatDraftTitle = "";
         const history = getChatHistory();
+        const chatReplyText = result.endpointError
+          ? getRequestSubmitToast(result, s)
+          : `${result.sentRemotely ? s.reqSubmittedSent : s.chatInlineSentMsg} (#${result.ticket.id})`;
         history.push({
           id: "b-req-" + Date.now(),
           role: "bot",
-          text: `${result.sentRemotely ? s.reqSubmittedSent : s.chatInlineSentMsg} (#${result.ticket.id})`,
+          text: chatReplyText,
           tools: [],
           offerRequest: false,
           createdAt: Date.now()
@@ -2039,7 +2050,7 @@
 
         renderChatWidget();
         renderCommunitySection();
-        notifyToast(result.sentRemotely ? s.reqSubmittedSent : s.reqSubmittedLocal);
+        notifyToast(getRequestSubmitToast(result, s));
       });
     }
   }

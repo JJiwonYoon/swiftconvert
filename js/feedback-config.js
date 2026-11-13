@@ -39,9 +39,9 @@ window.FEEDBACK_CONFIG = {
 
   // 개발자 요청서 전달 채널 (설정 시 즉시 실전 전송 활성화)
   requestDelivery: {
-    endpoint: "",           // 예: "https://formspree.io/f/xxxxxxxx" 또는 Google Apps Script / Cloudflare Worker URL
+    endpoint: "/api/requests", // Cloudflare Pages Functions (/api/requests -> Telegram 봇 실시간 알림 + D1 저장)
     githubRepo: "JJiwonYoon/leafconvert-comments",
-    contactEmail: ""        // 예: "dev@example.com" -> "이메일로 보내기" 버튼 활성화
+    contactEmail: ""           // 예: "dev@example.com" -> "이메일로 보내기" 버튼 활성화
   },
 
   // 선택: 실시간 1:1 운영자 채팅 위젯 (기본 "none"일 때는 내장 스마트 도우미 + 개발자 요청 채팅창 동작)

@@ -41,10 +41,10 @@ python3 scripts/build_seo_pages.py --domain https://leafconvert.pages.dev
 - **무료 `*.pages.dev` 도메인 단계**: `js/ads-config.js`에서 `demoMode: false`로 바꾸고 `kakaoAdFit` 또는 `customBanners`(쿠팡 파트너스 등)를 먼저 연결하세요.
 - **자체 `.com` 도메인 연결 후**: `adsense.enabled = true` 설정 및 `index.html` / 각 도구 페이지의 애드센스 스크립트를 활성화하세요.
 
-### 4. 댓글창 · 개발자 요청서 · 채팅창 연동 (`js/feedback-config.js`, `functions/api/comments.js`)
+### 4. 댓글창 · 개발자 요청서 · 채팅창 연동 (`js/feedback-config.js`, `functions/api/`)
 - **로그인 없는 익명 공유 댓글창 (`commentProvider: "api"`, 권장 · 0원)**: Cloudflare Pages 프로젝트 **Settings → Bindings(또는 Functions)** 에서 무료 D1 데이터베이스를 변수명 **`DB`** 로 연결하면, 방문자가 로그인 없이 남긴 댓글·대댓글·좋아요가 [functions/api/comments.js](functions/api/comments.js) 를 통해 D1에 저장되어 모든 방문자에게 실시간 공유됩니다. (`DB` 미연결/로컬 환경에서는 자동으로 브라우저 저장 모드로 동작합니다.)
 - **Giscus 공유 댓글창(선택)**: `commentProvider: "giscus"` + `giscus.app/ko`에서 발급받은 `repo`, `repoId`, `categoryId` 입력
-- **개발자 요청서 실시간 수신**: `requestDelivery.endpoint`에 Formspree / Google Apps Script / Cloudflare Worker / Webhook URL 입력 (또는 `githubRepo` / `contactEmail` 입력 시 1클릭 Issue/이메일 전송 지원)
+- **개발자 요청서 실시간 Telegram 알림 (`/api/requests`)**: [functions/api/requests.js](functions/api/requests.js) 가 연결되어 있습니다. Cloudflare Pages 프로젝트 **Settings → Variables and Secrets** 에 `TELEGRAM_BOT_TOKEN` 과 `TELEGRAM_CHAT_ID` 를 시크릿으로 등록하면 요청서 제출 즉시 텔레그램 푸시 알림과 D1 백업 저장이 함께 동작합니다. (`githubRepo` / `contactEmail` 기반 1클릭 Issue/이메일 전송도 병행 지원)
 - **실시간 1:1 운영자 채팅(선택)**: `liveChat`에 Crisp 또는 Tawk.to ID 연결
 
 ## 로컬 테스트 방법

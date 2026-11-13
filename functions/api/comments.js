@@ -3,45 +3,20 @@
  * Anonymous shared comments backend backed by Cloudflare D1 (binding: DB).
  */
 
+import {
+  enforcePostRateLimit,
+  getViewerToken,
+  isAdminRequest,
+  jsonResponse,
+  makeId,
+  rateLimitTableSql
+} from "../_lib/shared.js";
+
 const VALID_TYPES = new Set(["praise", "feature", "bug", "question"]);
 const VALID_SCOPE_RE = /^[a-z0-9-]+$/i;
-const RATE_LIMIT_MS = 5000;
 const MAX_COMMENTS = 200;
 
 let schemaReadyPromise = null;
-
-function jsonResponse(payload, status = 200) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store"
-    }
-  });
-}
-
-function getViewerToken(request, bodyToken) {
-  const raw = bodyToken || request.headers.get("X-User-Token") || "";
-  const clean = String(raw).trim().slice(0, 64);
-  return /^[a-zA-Z0-9_-]{6,64}$/.test(clean) ? clean : "";
-}
-
-async function getIpRateKey(request) {
-  const ip =
-    request.headers.get("CF-Connecting-IP") ||
-    request.headers.get("X-Forwarded-For") ||
-    "";
-  if (!ip) return "";
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(ip.split(",")[0].trim())
-  );
-  const hex = Array.from(new Uint8Array(digest))
-    .slice(0, 12)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return `ip:${hex}`;
-}
 
 async function ensureSchema(db) {
   if (!schemaReadyPromise) {
@@ -84,12 +59,7 @@ async function ensureSchema(db) {
             PRIMARY KEY (comment_id, author_token)
           )
         `),
-        db.prepare(`
-          CREATE TABLE IF NOT EXISTS comment_rate_limits (
-            rate_key TEXT PRIMARY KEY,
-            last_post_at INTEGER NOT NULL
-          )
-        `)
+        rateLimitTableSql(db)
       ])
       .catch((err) => {
         schemaReadyPromise = null;
@@ -97,41 +67,6 @@ async function ensureSchema(db) {
       });
   }
   return schemaReadyPromise;
-}
-
-function makeId(prefix) {
-  return `${prefix}-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`;
-}
-
-async function checkAndTouchRateLimit(db, keys, now) {
-  const validKeys = keys.filter(Boolean);
-  for (const key of validKeys) {
-    const row = await db
-      .prepare("SELECT last_post_at FROM comment_rate_limits WHERE rate_key = ?")
-      .bind(key)
-      .first();
-    if (row && now - Number(row.last_post_at) < RATE_LIMIT_MS) {
-      return false;
-    }
-  }
-  if (validKeys.length > 0) {
-    await db.batch(
-      validKeys.map((key) =>
-        db
-          .prepare(
-            "INSERT INTO comment_rate_limits (rate_key, last_post_at) VALUES (?, ?) ON CONFLICT(rate_key) DO UPDATE SET last_post_at = excluded.last_post_at"
-          )
-          .bind(key, now)
-      )
-    );
-  }
-  return true;
-}
-
-function isAdminRequest(request, env) {
-  const adminSecret = env && env.ADMIN_TOKEN ? String(env.ADMIN_TOKEN) : "";
-  if (!adminSecret) return false;
-  return request.headers.get("X-Admin-Token") === adminSecret;
 }
 
 export async function onRequestGet(context) {
@@ -200,12 +135,6 @@ export async function onRequestGet(context) {
   } catch (err) {
     return jsonResponse({ ok: false, error: "Failed to load comments" }, 500);
   }
-}
-
-async function enforcePostRateLimit(db, request, authorToken, admin, now) {
-  if (admin) return true;
-  const ipKey = await getIpRateKey(request);
-  return checkAndTouchRateLimit(db, [authorToken ? `tok:${authorToken}` : "", ipKey], now);
 }
 
 export async function onRequestPost(context) {
