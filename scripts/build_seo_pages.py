@@ -193,7 +193,11 @@ def render_tool_page(template: str, tool_id: str, seo_ko: dict, base_url: str) -
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--domain", default="https://your-site.pages.dev", help="Site base URL")
+    parser.add_argument(
+        "--domain",
+        default="https://swiftconvert.wldnjs0487.workers.dev",
+        help="Site base URL",
+    )
     args = parser.parse_args()
     base_url = args.domain.rstrip("/")
 
