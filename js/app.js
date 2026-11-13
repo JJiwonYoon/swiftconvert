@@ -274,6 +274,12 @@
     setTxt("licensesLink", s.licensesLink);
     setTxt("privacyLink", s.privacyLink);
     setTxt("termsLink", s.termsLink);
+    setTxt("scrollTopLabel", s.scrollTopLabel);
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+    if (scrollTopBtn) {
+      scrollTopBtn.setAttribute("aria-label", s.scrollTopTitle);
+      scrollTopBtn.title = s.scrollTopTitle;
+    }
     setTxt("orgTitle", s.orgTitle);
     setTxt("orgHint", s.orgHint);
 
@@ -1224,10 +1230,46 @@
       btn.addEventListener("click", () => openTool(btn.getAttribute("data-nav-tool"), true));
     });
 
-    document.getElementById("brandLogo").addEventListener("click", (e) => {
-      e.preventDefault();
-      closeTool(true);
-    });
+    const brandLogo = document.getElementById("brandLogo");
+    if (brandLogo) {
+      if (!isFileProtocol) {
+        brandLogo.setAttribute("href", rootUrl);
+      }
+      brandLogo.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (isFileProtocol) {
+          if (window.INITIAL_TOOL_ID) {
+            window.location.href = "../index.html";
+          } else if (window.location.hash) {
+            window.location.href = rootUrl;
+          } else {
+            window.location.reload();
+          }
+          return;
+        }
+        const cleanSearch = window.location.search
+          .replace(/([?&])tool=[^&]*(&|$)/, "$1")
+          .replace(/[?&]$/, "");
+        const targetUrl = rootUrl + cleanSearch;
+        if (window.location.href === targetUrl) {
+          window.location.reload();
+        } else {
+          window.location.href = targetUrl;
+        }
+      });
+    }
+
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+    if (scrollTopBtn) {
+      const syncScrollTopState = () => {
+        scrollTopBtn.classList.toggle("scrolled", (window.scrollY || 0) > 180);
+      };
+      syncScrollTopState();
+      window.addEventListener("scroll", syncScrollTopState, { passive: true });
+      scrollTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
 
     document.getElementById("backToAllBtn").addEventListener("click", () => closeTool(true));
 

@@ -468,7 +468,9 @@ window.I18N = {
     adPlaceholderDesc: "로컬 테스트 환경에서만 표시되는 광고 자리표시자입니다.",
     licensesLink: "오픈소스 라이선스",
     privacyLink: "개인정보처리방침",
-    termsLink: "이용약관"
+    termsLink: "이용약관",
+    scrollTopLabel: "위로",
+    scrollTopTitle: "맨 위로 이동"
   },
   en: {
     siteName: "LeafConvert",
@@ -585,7 +587,9 @@ window.I18N = {
     adPlaceholderDesc: "Developer preview placeholder shown only on localhost.",
     licensesLink: "Open Source Licenses",
     privacyLink: "Privacy Policy",
-    termsLink: "Terms of Service"
+    termsLink: "Terms of Service",
+    scrollTopLabel: "TOP",
+    scrollTopTitle: "Back to top"
   },
   ja: {
     siteName: "LeafConvert",
@@ -702,7 +706,9 @@ window.I18N = {
     adPlaceholderDesc: "ローカル確認環境でのみ表示されるプレースホルダーです。",
     licensesLink: "オープンソースライセンス",
     privacyLink: "プライバシーポリシー",
-    termsLink: "利用規約"
+    termsLink: "利用規約",
+    scrollTopLabel: "上へ",
+    scrollTopTitle: "ページ上部へ戻る"
   },
   es: {
     siteName: "LeafConvert",
@@ -819,6 +825,8 @@ window.I18N = {
     adPlaceholderDesc: "Marcador visible solo en entorno local de prueba.",
     licensesLink: "Licencias Open Source",
     privacyLink: "Política de Privacidad",
-    termsLink: "Términos de Uso"
+    termsLink: "Términos de Uso",
+    scrollTopLabel: "SUBIR",
+    scrollTopTitle: "Volver arriba"
   }
 };
