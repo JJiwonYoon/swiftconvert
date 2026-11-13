@@ -19,9 +19,11 @@
  */
 
 window.FEEDBACK_CONFIG = {
-  // "local": 내장 댓글창 (현재 브라우저 저장 + 즉시 테스트 가능)
-  // "giscus": GitHub Discussions 기반 실시간 공유 댓글 위젯 임베드
-  commentProvider: "giscus",
+  // "api": Cloudflare Pages Functions + D1 무료 익명 공유 댓글 (로그인 불필요, 미연동 시 브라우저 저장 자동 폴백)
+  // "local": 내장 댓글창 (현재 브라우저 저장 전용)
+  // "giscus": GitHub Discussions 기반 실시간 공유 댓글 위젯 (GitHub 로그인 필요)
+  commentProvider: "api",
+  commentsApiUrl: "/api/comments",
 
   giscus: {
     repo: "JJiwonYoon/leafconvert-comments",

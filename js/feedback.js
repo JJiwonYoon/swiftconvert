@@ -26,6 +26,8 @@
       tabRequest: "🛠️ 개발자 요청서",
       localModeBadge: "💬 내 브라우저 저장",
       localModeDesc: "작성하신 댓글과 기능 요청은 현재 기기의 브라우저에 안전하게 저장됩니다.",
+      sharedModeBadge: "💬 로그인 없는 익명 공유 댓글",
+      sharedModeDesc: "회원가입·로그인 없이 자유롭게 후기나 의견을 남기면 모든 방문자와 실시간으로 공유됩니다.",
       giscusModeBadge: "💬 실시간 공유 댓글",
       giscusModeDesc: "모든 방문자와 댓글·반응을 실시간으로 함께 공유할 수 있습니다.",
       nickLabel: "닉네임",
@@ -99,6 +101,8 @@
       toastCommentDeleted: "🗑️ 삭제되었습니다.",
       toastReplyPosted: "✅ 답글이 등록되었습니다!",
       toastCommentValidation: "댓글 내용을 입력해주세요.",
+      toastCommentRateLimit: "⏳ 잠시 후(약 5초) 다시 작성해 주세요.",
+      toastCommentError: "⚠️ 댓글 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
       chatFabLabel: "채팅 · 개발자 요청",
       chatTitle: "LeafConvert 도우미",
       chatSubtitle: "도구 찾기 · 사용법 · 개발자 기능 요청",
@@ -133,6 +137,8 @@
       tabRequest: "🛠️ Feature Request",
       localModeBadge: "💬 Saved in Your Browser",
       localModeDesc: "Comments and feature requests are stored safely in your browser on this device.",
+      sharedModeBadge: "💬 Anonymous Shared Comments",
+      sharedModeDesc: "Post reviews or feedback freely without signing in — shared live with all visitors.",
       giscusModeBadge: "💬 Live Community Comments",
       giscusModeDesc: "Share comments and reactions live with other visitors.",
       nickLabel: "Nickname",
@@ -206,6 +212,8 @@
       toastCommentDeleted: "🗑️ Deleted.",
       toastReplyPosted: "✅ Reply posted!",
       toastCommentValidation: "Please write a comment before posting.",
+      toastCommentRateLimit: "⏳ Please wait a few seconds before posting again.",
+      toastCommentError: "⚠️ Could not save your action right now. Please try again.",
       chatFabLabel: "Chat · Request",
       chatTitle: "LeafConvert Assistant",
       chatSubtitle: "Find tools · Help · Developer Request",
@@ -240,6 +248,8 @@
       tabRequest: "🛠️ 開発者リクエスト",
       localModeBadge: "💬 ブラウザ保存",
       localModeDesc: "入力したコメントや機能リクエストは、お使いのブラウザ内に安全に保存されます。",
+      sharedModeBadge: "💬 ログイン不要の匿名共有コメント",
+      sharedModeDesc: "ログイン不要で感想やご意見を投稿でき、すべての訪問者とリアルタイムに共有されます。",
       giscusModeBadge: "💬 共有コメント",
       giscusModeDesc: "他の訪問者とリアルタイムにコメントやリアクションを共有できます。",
       nickLabel: "ニックネーム",
@@ -313,6 +323,8 @@
       toastCommentDeleted: "🗑️ 削除しました。",
       toastReplyPosted: "✅ 返信を投稿しました！",
       toastCommentValidation: "コメント本文を入力してください。",
+      toastCommentRateLimit: "⏳ 数秒待ってからもう一度投稿してください。",
+      toastCommentError: "⚠️ 処理中にエラーが発生しました。しばらくしてからお試しください。",
       chatFabLabel: "チャット・機能要望",
       chatTitle: "LeafConvert アシスタント",
       chatSubtitle: "ツール案内・開発者リクエスト",
@@ -347,6 +359,8 @@
       tabRequest: "🛠️ Solicitud al Dev",
       localModeBadge: "💬 Guardado en tu Navegador",
       localModeDesc: "Tus comentarios y solicitudes se guardan de forma segura en este navegador.",
+      sharedModeBadge: "💬 Comentarios Anónimos Compartidos",
+      sharedModeDesc: "Deja opiniones o comentarios libremente sin iniciar sesión; se comparten con todos los visitantes.",
       giscusModeBadge: "💬 Comentarios Compartidos",
       giscusModeDesc: "Comparte comentarios y reacciones en tiempo real con otros visitantes.",
       nickLabel: "Nombre",
@@ -420,6 +434,8 @@
       toastCommentDeleted: "🗑️ Eliminado.",
       toastReplyPosted: "✅ ¡Respuesta publicada!",
       toastCommentValidation: "Por favor escribe un comentario.",
+      toastCommentRateLimit: "⏳ Por favor espera unos segundos antes de volver a publicar.",
+      toastCommentError: "⚠️ No se pudo completar la acción. Inténtalo de nuevo.",
       chatFabLabel: "Chat · Solicitar",
       chatTitle: "Asistente LeafConvert",
       chatSubtitle: "Ayuda · Buscar herramienta · Solicitud",
@@ -457,6 +473,10 @@
     sortOrder: "newest",
     commentType: "praise",
     replyingToId: null,
+    remoteComments: [],
+    apiConnected: false,
+    apiLoaded: false,
+    apiBusy: false,
     chatOpen: false,
     chatInlineRequest: false,
     chatDraftTitle: "",
@@ -567,6 +587,101 @@
     );
   }
 
+  function getCommentsApiUrl(cfg) {
+    if (!cfg || cfg.commentProvider !== "api") return "";
+    return cfg.commentsApiUrl || "/api/comments";
+  }
+
+  function useRemoteComments(cfg) {
+    return Boolean(getCommentsApiUrl(cfg) && fbState.apiConnected);
+  }
+
+  function refreshRemoteCommentsDom() {
+    const s = ft();
+    const cfg = getConfig();
+    const isRemote = useRemoteComments(cfg);
+    const feedEl = document.getElementById("fbCommentsFeed");
+    if (feedEl) {
+      feedEl.innerHTML = renderCommentsFeedHtml();
+    }
+    const countEl = document.getElementById("fbCommentsTabCount");
+    if (countEl) {
+      const localCount = safeStorageGet(STORAGE_KEYS.comments, []).length;
+      countEl.textContent = String(isRemote ? fbState.remoteComments.length : localCount);
+    }
+    const filterAllBtn = document.querySelector('[data-fb-filter="all"]');
+    if (filterAllBtn) {
+      const allCount = isRemote
+        ? fbState.remoteComments.length
+        : safeStorageGet(STORAGE_KEYS.comments, []).length;
+      filterAllBtn.textContent = `${s.filterAll} (${allCount})`;
+    }
+    const pillEl = document.getElementById("fbModePill");
+    const descEl = document.getElementById("fbModeText");
+    if (pillEl && descEl && !hasValidGiscusConfig(cfg)) {
+      pillEl.textContent = isRemote ? s.sharedModeBadge : s.localModeBadge;
+      descEl.textContent = isRemote ? s.sharedModeDesc : s.localModeDesc;
+    }
+  }
+
+  async function fetchRemoteComments() {
+    const cfg = getConfig();
+    const apiUrl = getCommentsApiUrl(cfg);
+    if (!apiUrl || typeof fetch !== "function") {
+      fbState.apiLoaded = true;
+      return false;
+    }
+    try {
+      const res = await fetch(apiUrl, {
+        method: "GET",
+        headers: { "X-User-Token": getUserToken() },
+        cache: "no-store"
+      });
+      if (!res.ok) {
+        fbState.apiConnected = false;
+        fbState.apiLoaded = true;
+        return false;
+      }
+      const data = await res.json();
+      if (data && data.ok && Array.isArray(data.comments)) {
+        fbState.remoteComments = data.comments;
+        fbState.apiConnected = true;
+        fbState.apiLoaded = true;
+        refreshRemoteCommentsDom();
+        return true;
+      }
+    } catch (e) {}
+    fbState.apiConnected = false;
+    fbState.apiLoaded = true;
+    return false;
+  }
+
+  async function postRemoteCommentAction(payload) {
+    const apiUrl = getCommentsApiUrl(getConfig());
+    if (!apiUrl || typeof fetch !== "function") {
+      return { ok: false, status: 0, data: null };
+    }
+    try {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Token": getUserToken()
+        },
+        body: JSON.stringify(Object.assign({}, payload, { authorToken: getUserToken() }))
+      });
+      const data = await res.json().catch(() => null);
+      return { ok: Boolean(res.ok && data && data.ok), status: res.status, data };
+    } catch (e) {
+      return { ok: false, status: 0, data: null };
+    }
+  }
+
+  function notifyRemoteFailure(status) {
+    const s = ft();
+    notifyToast(status === 429 ? s.toastCommentRateLimit : s.toastCommentError);
+  }
+
   function isSafeHttpUrl(url) {
     if (!url || typeof url !== "string") return false;
     const trimmed = url.trim();
@@ -650,8 +765,9 @@
     const s = ft();
     const activeToolId = fbState.deps ? fbState.deps.getToolId() : null;
     const myToken = getUserToken();
+    const isRemote = useRemoteComments(getConfig());
     const likedMap = safeStorageGet(STORAGE_KEYS.likes, {});
-    let comments = safeStorageGet(STORAGE_KEYS.comments, []);
+    let comments = isRemote ? [...fbState.remoteComments] : safeStorageGet(STORAGE_KEYS.comments, []);
 
     if (fbState.filterScope === "current" && activeToolId) {
       comments = comments.filter((c) => c.scope === activeToolId);
@@ -684,8 +800,8 @@
         const scopeLabel = getToolDisplayName(c.scope);
         const avatarBg = getAvatarColor(c.nick);
         const initial = escapeHtml((c.nick || "G").trim().slice(0, 1).toUpperCase());
-        const isLiked = Boolean(likedMap[c.id]);
-        const isMine = c.authorToken === myToken;
+        const isLiked = isRemote ? Boolean(c.liked) : Boolean(likedMap[c.id]);
+        const isMine = Boolean(c.isMine || (c.authorToken && c.authorToken === myToken));
         const replies = Array.isArray(c.replies) ? c.replies : [];
 
         const repliesHtml = replies.length
@@ -698,7 +814,7 @@
                     <strong>${escapeHtml(r.nick)}</strong>
                     <span>${escapeHtml(formatRelativeTime(r.createdAt))}</span>
                     ${
-                      r.authorToken === myToken
+                      Boolean(r.isMine || (r.authorToken && r.authorToken === myToken))
                         ? `<button type="button" class="fb-text-danger" data-del-reply="${escapeHtml(r.id)}" data-parent-id="${escapeHtml(c.id)}">${escapeHtml(s.deleteBtn)}</button>`
                         : ""
                     }
@@ -871,12 +987,28 @@
     safeStorageSet(STORAGE_KEYS.requests, requests);
 
     if (payload.crossPost) {
-      addLocalComment({
-        nick: payload.contact ? payload.contact.split("@")[0] : getSavedNickname(),
-        type: payload.category === "bug" ? "bug" : "feature",
-        scope: ticket.toolId,
-        text: `[${ticket.categoryLabel} #${ticket.id}] ${ticket.title}\n${ticket.details}`
-      });
+      const crossNick = payload.contact ? payload.contact.split("@")[0] : getSavedNickname();
+      const crossType = payload.category === "bug" ? "bug" : "feature";
+      const crossText = `[${ticket.categoryLabel} #${ticket.id}] ${ticket.title}\n${ticket.details}`;
+      if (useRemoteComments(cfg)) {
+        const res = await postRemoteCommentAction({
+          action: "createComment",
+          nick: crossNick || s.anonymousName,
+          type: crossType,
+          scope: ticket.toolId,
+          text: crossText
+        });
+        if (res.ok && res.data && res.data.comment) {
+          fbState.remoteComments.unshift(res.data.comment);
+        }
+      } else {
+        addLocalComment({
+          nick: crossNick,
+          type: crossType,
+          scope: ticket.toolId,
+          text: crossText
+        });
+      }
     }
 
     return { ticket, sentRemotely, endpointError };
@@ -933,14 +1065,23 @@
     const s = ft();
     const cfg = getConfig();
     const giscusActive = hasValidGiscusConfig(cfg);
+    const isRemote = useRemoteComments(cfg);
     const activeToolId = fbState.deps ? fbState.deps.getToolId() : null;
-    const allComments = safeStorageGet(STORAGE_KEYS.comments, []);
+    const allComments = isRemote ? fbState.remoteComments : safeStorageGet(STORAGE_KEYS.comments, []);
     const allRequests = safeStorageGet(STORAGE_KEYS.requests, []);
     const savedNick = getSavedNickname();
     const defaultScope = activeToolId || "all";
 
-    const modeBadge = giscusActive ? s.giscusModeBadge : s.localModeBadge;
-    const modeDesc = giscusActive ? s.giscusModeDesc : s.localModeDesc;
+    const modeBadge = giscusActive
+      ? s.giscusModeBadge
+      : isRemote
+      ? s.sharedModeBadge
+      : s.localModeBadge;
+    const modeDesc = giscusActive
+      ? s.giscusModeDesc
+      : isRemote
+      ? s.sharedModeDesc
+      : s.localModeDesc;
 
     const commentsPanelHtml = giscusActive
       ? `<div id="giscusMount" class="fb-giscus-mount"></div>`
@@ -1084,7 +1225,7 @@
           </div>
           <div class="fb-tabs" role="tablist">
             <button type="button" class="fb-tab-btn${fbState.activeTab === "comments" ? " active" : ""}" data-fb-tab="comments" role="tab">
-              ${escapeHtml(s.tabComments)}${giscusActive ? "" : ` <span class="fb-tab-count">${allComments.length}</span>`}
+              ${escapeHtml(s.tabComments)}${giscusActive ? "" : ` <span class="fb-tab-count" id="fbCommentsTabCount">${allComments.length}</span>`}
             </button>
             <button type="button" class="fb-tab-btn${fbState.activeTab === "request" ? " active" : ""}" data-fb-tab="request" role="tab">
               ${escapeHtml(s.tabRequest)} <span class="fb-tab-count">${allRequests.length}</span>
@@ -1093,8 +1234,8 @@
         </div>
 
         <div class="fb-mode-banner">
-          <span class="fb-mode-pill">${escapeHtml(modeBadge)}</span>
-          <span class="fb-mode-text">${escapeHtml(modeDesc)}</span>
+          <span class="fb-mode-pill" id="fbModePill">${escapeHtml(modeBadge)}</span>
+          <span class="fb-mode-text" id="fbModeText">${escapeHtml(modeDesc)}</span>
         </div>
 
         <div class="fb-panel-body">
@@ -1147,8 +1288,9 @@
 
     const commentForm = document.getElementById("commentForm");
     if (commentForm) {
-      commentForm.addEventListener("submit", (e) => {
+      commentForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        if (fbState.apiBusy) return;
         const textEl = document.getElementById("fbCommentTextarea");
         const nickEl = document.getElementById("fbNickInput");
         const scopeEl = document.getElementById("fbScopeSelect");
@@ -1158,10 +1300,42 @@
           if (textEl) textEl.focus();
           return;
         }
+        const rawNick = nickEl ? nickEl.value.trim().slice(0, 30) : "";
+        if (rawNick) saveNickname(rawNick);
+        const scopeVal = scopeEl ? scopeEl.value : "all";
+
+        const cfg = getConfig();
+        if (getCommentsApiUrl(cfg) && !fbState.apiLoaded) {
+          await fetchRemoteComments();
+        }
+
+        if (useRemoteComments(cfg)) {
+          fbState.apiBusy = true;
+          const submitBtn = commentForm.querySelector('button[type="submit"]');
+          if (submitBtn) submitBtn.disabled = true;
+          const res = await postRemoteCommentAction({
+            action: "createComment",
+            nick: rawNick || s.anonymousName,
+            type: fbState.commentType,
+            scope: scopeVal,
+            text
+          });
+          fbState.apiBusy = false;
+          if (submitBtn) submitBtn.disabled = false;
+          if (!res.ok || !res.data || !res.data.comment) {
+            notifyRemoteFailure(res.status);
+            return;
+          }
+          fbState.remoteComments.unshift(res.data.comment);
+          notifyToast(s.toastCommentPosted);
+          renderCommunitySection();
+          return;
+        }
+
         addLocalComment({
-          nick: nickEl ? nickEl.value : "",
+          nick: rawNick,
           type: fbState.commentType,
-          scope: scopeEl ? scopeEl.value : "all",
+          scope: scopeVal,
           text
         });
         notifyToast(s.toastCommentPosted);
@@ -1186,7 +1360,7 @@
 
     const feed = document.getElementById("fbCommentsFeed");
     if (feed) {
-      feed.addEventListener("click", (e) => {
+      feed.addEventListener("click", async (e) => {
         const starterBtn = e.target.closest("[data-starter]");
         if (starterBtn && textarea) {
           const kind = starterBtn.getAttribute("data-starter");
@@ -1208,6 +1382,20 @@
         const likeBtn = e.target.closest("[data-like-comment]");
         if (likeBtn) {
           const cid = likeBtn.getAttribute("data-like-comment");
+          if (useRemoteComments(getConfig())) {
+            const res = await postRemoteCommentAction({ action: "toggleLike", commentId: cid });
+            if (!res.ok || !res.data) {
+              notifyRemoteFailure(res.status);
+              return;
+            }
+            const target = fbState.remoteComments.find((x) => x.id === cid);
+            if (target) {
+              target.likes = res.data.likes;
+              target.liked = res.data.liked;
+              renderCommunitySection();
+            }
+            return;
+          }
           const likedMap = safeStorageGet(STORAGE_KEYS.likes, {});
           const comments = safeStorageGet(STORAGE_KEYS.comments, []);
           const target = comments.find((x) => x.id === cid);
@@ -1229,6 +1417,17 @@
         const delBtn = e.target.closest("[data-del-comment]");
         if (delBtn) {
           const cid = delBtn.getAttribute("data-del-comment");
+          if (useRemoteComments(getConfig())) {
+            const res = await postRemoteCommentAction({ action: "deleteComment", commentId: cid });
+            if (!res.ok) {
+              notifyRemoteFailure(res.status);
+              return;
+            }
+            fbState.remoteComments = fbState.remoteComments.filter((x) => x.id !== cid);
+            notifyToast(s.toastCommentDeleted);
+            renderCommunitySection();
+            return;
+          }
           const myTok = getUserToken();
           const comments = safeStorageGet(STORAGE_KEYS.comments, []).filter(
             (x) => !(x.id === cid && x.authorToken === myTok)
@@ -1258,6 +1457,27 @@
             notifyToast(s.toastCommentValidation);
             return;
           }
+          if (useRemoteComments(getConfig())) {
+            const res = await postRemoteCommentAction({
+              action: "createReply",
+              commentId: cid,
+              nick: getSavedNickname() || s.anonymousName,
+              text: replyText
+            });
+            if (!res.ok || !res.data || !res.data.reply) {
+              notifyRemoteFailure(res.status);
+              return;
+            }
+            const target = fbState.remoteComments.find((x) => x.id === cid);
+            if (target) {
+              target.replies = Array.isArray(target.replies) ? target.replies : [];
+              target.replies.push(res.data.reply);
+            }
+            fbState.replyingToId = null;
+            notifyToast(s.toastReplyPosted);
+            renderCommunitySection();
+            return;
+          }
           const comments = safeStorageGet(STORAGE_KEYS.comments, []);
           const target = comments.find((x) => x.id === cid);
           if (target) {
@@ -1281,6 +1501,24 @@
         if (delReplyBtn) {
           const rid = delReplyBtn.getAttribute("data-del-reply");
           const pid = delReplyBtn.getAttribute("data-parent-id");
+          if (useRemoteComments(getConfig())) {
+            const res = await postRemoteCommentAction({
+              action: "deleteReply",
+              commentId: pid,
+              replyId: rid
+            });
+            if (!res.ok) {
+              notifyRemoteFailure(res.status);
+              return;
+            }
+            const target = fbState.remoteComments.find((x) => x.id === pid);
+            if (target && Array.isArray(target.replies)) {
+              target.replies = target.replies.filter((r) => r.id !== rid);
+            }
+            notifyToast(s.toastCommentDeleted);
+            renderCommunitySection();
+            return;
+          }
           const myTok = getUserToken();
           const comments = safeStorageGet(STORAGE_KEYS.comments, []);
           const target = comments.find((x) => x.id === pid);
@@ -1826,6 +2064,9 @@
 
     renderCommunitySection();
     renderChatWidget();
+    if (getCommentsApiUrl(getConfig()) && !hasValidGiscusConfig(getConfig())) {
+      fetchRemoteComments();
+    }
   }
 
   function syncLanguage() {
