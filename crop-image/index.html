@@ -10,10 +10,11 @@
   <meta name="naver-site-verification" content="260708e45fc095c2c6f8918c4439150c717ae34e" />
   <link rel="canonical" href="https://leafconvert.pages.dev/crop-image/" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://leafconvert.pages.dev/crop-image/" />
   <meta property="og:site_name" content="LeafConvert" />
   <meta property="og:title" content="이미지 자르기 · 90도 회전 · 좌우 반전 무료 온라인 편집기 | LeafConvert" />
   <meta property="og:description" content="사진을 자유 비율, 1:1 정사각형, 16:9, 3.5:4.5 증명사진 비율로 드래그해 자르고 90도 회전 및 좌우·상하 반전을 한 번에 적용하세요." />
-  <link rel="stylesheet" href="../css/style.css?v=76f28c2d" />
+  <link rel="stylesheet" href="../css/style.css?v=2f07f1b2" />
 
   <!-- 구조화 데이터 (Google 검색 리치 스니펫용 JSON-LD) -->
   <script type="application/ld+json">
@@ -77,12 +78,12 @@
       </a>
 
       <nav class="nav-links" aria-label="Quick Tools">
-        <button class="nav-btn" data-nav-tool="compress-pdf">PDF 압축</button>
-        <button class="nav-btn" data-nav-tool="pdf-to-jpg">PDF JPG/PNG</button>
-        <button class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기</button>
-        <button class="nav-btn" data-nav-tool="sign-pdf">PDF 서명</button>
-        <button class="nav-btn" data-nav-tool="compress-kb">200KB 압축</button>
-        <button class="nav-btn" data-nav-tool="exif-remove">EXIF 삭제</button>
+        <a href="../compress-pdf/" class="nav-btn" data-nav-tool="compress-pdf">PDF 용량 줄이기 (압축)</a>
+        <a href="../pdf-to-jpg/" class="nav-btn" data-nav-tool="pdf-to-jpg">PDF 이미지 변환 (JPG/PNG)</a>
+        <a href="../merge-pdf/" class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기 (병합)</a>
+        <a href="../sign-pdf/" class="nav-btn" data-nav-tool="sign-pdf">PDF 전자서명 · 도장 넣기</a>
+        <a href="../compress-kb/" class="nav-btn" data-nav-tool="compress-kb">목표 용량(KB) 딱 맞춰 압축</a>
+        <a href="../exif-remove/" class="nav-btn" data-nav-tool="exif-remove">사진 위치정보(GPS)·EXIF 삭제</a>
       </nav>
 
       <div class="header-controls">
@@ -131,7 +132,7 @@
       </div>
 
       <!-- 큐레이션 19종 변환기 카드 그리드 -->
-      <div class="tools-grid" id="toolsGrid"></div>
+      <div class="tools-grid" id="toolsGrid"><!-- SSR:TOOLS_GRID:START --><!-- SSR:TOOLS_GRID:END --></div>
 
       <!-- 인피드 광고 슬롯 -->
       <div class="ad-slot ad-slot-infeed" data-ad-slot="bottomInfeed"></div>
@@ -140,7 +141,7 @@
     <!-- ================= 2. 개별 변환기 작업실 뷰 ================= -->
     <section id="workspaceView" class="workspace-wrapper active">
       <div class="workspace-topbar">
-        <button class="back-btn" id="backToAllBtn">← 모든 변환 도구 보기</button>
+        <a href="../" class="back-btn" id="backToAllBtn">← 모든 변환 도구 보기</a>
         <button class="share-btn" id="shareToolBtn">🔗 이 도구 링크 복사</button>
       </div>
 
@@ -242,12 +243,12 @@
           </div>
 
           <!-- 연관 도구 내부 링크 (SEO + 추가 페이지뷰 유도 카드) -->
-          <div class="related-tools-box" id="relatedToolsBox" style="display:none;">
+          <div class="related-tools-box" id="relatedToolsBox" style="display:block;">
             <div class="related-tools-header">
               <h3 id="relatedTitle">✨ 함께 많이 쓰는 추천 도구</h3>
               <p id="relatedSubtitle">다음 작업도 설치 없이 바로 이어서 해보세요 — 클릭 한 번으로 즉시 이동합니다</p>
             </div>
-            <div class="related-pills" id="relatedPills"></div>
+            <div class="related-pills" id="relatedPills"><!-- SSR:RELATED:START --><a href="../resize-image/" class="related-card" style="--card-accent:#14b8a6" data-rel-tool="resize-image"><span class="related-card-icon" style="background:#14b8a6">📐</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">이미지 크기 조절 (리사이즈)</span></span><span class="related-card-desc">여러 장의 이미지 가로/세로 픽셀(px) 크기나 SNS/증명 프리셋에 맞춰 한 번에 변경합니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../compress-kb/" class="related-card" style="--card-accent:#059669" data-rel-tool="compress-kb"><span class="related-card-icon" style="background:#059669">🎯</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">목표 용량(KB) 딱 맞춰 압축</span><span class="related-card-badge">POPULAR</span></span><span class="related-card-desc">원서·이력서·관공서 제출용 100KB, 200KB, 500KB 용량 제한에 맞춰 자동으로 압축합니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../blur-image/" class="related-card" style="--card-accent:#0f172a" data-rel-tool="blur-image"><span class="related-card-icon" style="background:#0f172a">🫥</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">사진 모자이크 · 블러 가리기</span><span class="related-card-badge">NEW</span></span><span class="related-card-desc">얼굴, 차량 번호판, 계좌번호 등 민감한 영역만 마우스로 드래그해 모자이크·블러·검정 박스로 가립니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../exif-remove/" class="related-card" style="--card-accent:#dc2626" data-rel-tool="exif-remove"><span class="related-card-icon" style="background:#dc2626">🕵️</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">사진 위치정보(GPS)·EXIF 삭제</span><span class="related-card-badge">NEW</span></span><span class="related-card-desc">중고거래·SNS 업로드 전 사진 속 집 위치(GPS)·카메라 기종·촬영일시 EXIF를 화질 손상 없이 삭제합니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><!-- SSR:RELATED:END --></div>
           </div>
         </div>
 
@@ -262,12 +263,12 @@
     <section class="seo-section">
       <div class="seo-card">
         <h2 id="howToTitle">💡 3단계 간단 사용 방법</h2>
-        <ul class="step-list" id="howToStepsList"><li class="step-item"><span class="step-num">1</span><span>자르거나 회전할 JPG, PNG, WebP, HEIC 사진을 올리세요.</span></li><li class="step-item"><span class="step-num">2</span><span>비율 버튼(자유·1:1·4:3·16:9·3.5:4.5 증명), 회전(↺/↻), 반전(⇆/⇅)을 조절하고 자를 영역을 드래그하세요.</span></li><li class="step-item"><span class="step-num">3</span><span>[지금 변환 시작하기]를 누르면 선명하게 잘린 이미지를 바로 저장할 수 있습니다.</span></li></ul>
+        <ul class="step-list" id="howToStepsList"><!-- SSR:STEPS:START --><li class="step-item"><span class="step-num">1</span><span>자르거나 회전할 JPG, PNG, WebP, HEIC 사진을 올리세요.</span></li><li class="step-item"><span class="step-num">2</span><span>비율 버튼(자유·1:1·4:3·16:9·3.5:4.5 증명), 회전(↺/↻), 반전(⇆/⇅)을 조절하고 자를 영역을 드래그하세요.</span></li><li class="step-item"><span class="step-num">3</span><span>[지금 변환 시작하기]를 누르면 선명하게 잘린 이미지를 바로 저장할 수 있습니다.</span></li><!-- SSR:STEPS:END --></ul>
       </div>
 
       <div class="seo-card">
         <h2 id="faqTitle">❓ 자주 묻는 질문 (FAQ)</h2>
-        <div class="faq-list" id="faqList"><div class="faq-item"><div class="faq-q">Q. 여권·이력서용 3.5:4.5 증명사진 비율로 자르고 용량도 200KB 이하로 줄일 수 있나요?</div><div class="faq-a">네! 여기서 3.5:4.5 비율로 얼굴을 맞춘 뒤 결과 카드 아래 [목표 용량(KB) 압축]으로 이동하면 원서 제출까지 완벽히 끝납니다.</div></div></div>
+        <div class="faq-list" id="faqList"><!-- SSR:FAQS:START --><div class="faq-item"><div class="faq-q">Q. 여권·이력서용 3.5:4.5 증명사진 비율로 자르고 용량도 200KB 이하로 줄일 수 있나요?</div><div class="faq-a">네! 여기서 3.5:4.5 비율로 얼굴을 맞춘 뒤 결과 카드 아래 [목표 용량(KB) 압축]으로 이동하면 원서 제출까지 완벽히 끝납니다.</div></div><!-- SSR:FAQS:END --></div>
       </div>
     </section>
 
@@ -321,6 +322,6 @@
   <script src="../js/converters.js?v=21e106d3"></script>
   <script src="../js/editors.js?v=46bd16c0"></script>
   <script src="../js/feedback.js?v=a73f98f1"></script>
-  <script src="../js/app.js?v=f65323e8"></script>
+  <script src="../js/app.js?v=b8a7236f"></script>
 </body>
 </html>

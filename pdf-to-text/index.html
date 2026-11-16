@@ -10,10 +10,11 @@
   <meta name="naver-site-verification" content="260708e45fc095c2c6f8918c4439150c717ae34e" />
   <link rel="canonical" href="https://leafconvert.pages.dev/pdf-to-text/" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://leafconvert.pages.dev/pdf-to-text/" />
   <meta property="og:site_name" content="LeafConvert" />
   <meta property="og:title" content="PDF 텍스트 추출 무료 - PDF 글자 복사 및 TXT 파일 저장 | LeafConvert" />
   <meta property="og:description" content="PDF 문서 속 모든 문장과 텍스트를 1초 만에 추출해 화면에서 바로 복사하거나 UTF-8 .TXT 파일로 내려받으세요." />
-  <link rel="stylesheet" href="../css/style.css?v=76f28c2d" />
+  <link rel="stylesheet" href="../css/style.css?v=2f07f1b2" />
 
   <!-- 구조화 데이터 (Google 검색 리치 스니펫용 JSON-LD) -->
   <script type="application/ld+json">
@@ -85,12 +86,12 @@
       </a>
 
       <nav class="nav-links" aria-label="Quick Tools">
-        <button class="nav-btn" data-nav-tool="compress-pdf">PDF 압축</button>
-        <button class="nav-btn" data-nav-tool="pdf-to-jpg">PDF JPG/PNG</button>
-        <button class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기</button>
-        <button class="nav-btn" data-nav-tool="sign-pdf">PDF 서명</button>
-        <button class="nav-btn" data-nav-tool="compress-kb">200KB 압축</button>
-        <button class="nav-btn" data-nav-tool="exif-remove">EXIF 삭제</button>
+        <a href="../compress-pdf/" class="nav-btn" data-nav-tool="compress-pdf">PDF 용량 줄이기 (압축)</a>
+        <a href="../pdf-to-jpg/" class="nav-btn" data-nav-tool="pdf-to-jpg">PDF 이미지 변환 (JPG/PNG)</a>
+        <a href="../merge-pdf/" class="nav-btn" data-nav-tool="merge-pdf">PDF 합치기 (병합)</a>
+        <a href="../sign-pdf/" class="nav-btn" data-nav-tool="sign-pdf">PDF 전자서명 · 도장 넣기</a>
+        <a href="../compress-kb/" class="nav-btn" data-nav-tool="compress-kb">목표 용량(KB) 딱 맞춰 압축</a>
+        <a href="../exif-remove/" class="nav-btn" data-nav-tool="exif-remove">사진 위치정보(GPS)·EXIF 삭제</a>
       </nav>
 
       <div class="header-controls">
@@ -139,7 +140,7 @@
       </div>
 
       <!-- 큐레이션 19종 변환기 카드 그리드 -->
-      <div class="tools-grid" id="toolsGrid"></div>
+      <div class="tools-grid" id="toolsGrid"><!-- SSR:TOOLS_GRID:START --><!-- SSR:TOOLS_GRID:END --></div>
 
       <!-- 인피드 광고 슬롯 -->
       <div class="ad-slot ad-slot-infeed" data-ad-slot="bottomInfeed"></div>
@@ -148,7 +149,7 @@
     <!-- ================= 2. 개별 변환기 작업실 뷰 ================= -->
     <section id="workspaceView" class="workspace-wrapper active">
       <div class="workspace-topbar">
-        <button class="back-btn" id="backToAllBtn">← 모든 변환 도구 보기</button>
+        <a href="../" class="back-btn" id="backToAllBtn">← 모든 변환 도구 보기</a>
         <button class="share-btn" id="shareToolBtn">🔗 이 도구 링크 복사</button>
       </div>
 
@@ -250,12 +251,12 @@
           </div>
 
           <!-- 연관 도구 내부 링크 (SEO + 추가 페이지뷰 유도 카드) -->
-          <div class="related-tools-box" id="relatedToolsBox" style="display:none;">
+          <div class="related-tools-box" id="relatedToolsBox" style="display:block;">
             <div class="related-tools-header">
               <h3 id="relatedTitle">✨ 함께 많이 쓰는 추천 도구</h3>
               <p id="relatedSubtitle">다음 작업도 설치 없이 바로 이어서 해보세요 — 클릭 한 번으로 즉시 이동합니다</p>
             </div>
-            <div class="related-pills" id="relatedPills"></div>
+            <div class="related-pills" id="relatedPills"><!-- SSR:RELATED:START --><a href="../pdf-to-jpg/" class="related-card" style="--card-accent:#e5322d" data-rel-tool="pdf-to-jpg"><span class="related-card-icon" style="background:#e5322d">🖼️</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">PDF 이미지 변환 (JPG/PNG)</span><span class="related-card-badge">HOT</span></span><span class="related-card-desc">PDF 문서를 고화질 JPG, 무손실 PNG 또는 경량 WebP 이미지로 변환하고 ZIP으로 한 번에 저장합니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../compress-pdf/" class="related-card" style="--card-accent:#e11d48" data-rel-tool="compress-pdf"><span class="related-card-icon" style="background:#e11d48">🗜️</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">PDF 용량 줄이기 (압축)</span><span class="related-card-badge">HOT</span></span><span class="related-card-desc">이메일·관공서 첨부 제한(2MB·5MB·10MB)에 맞춰 PDF 파일 크기를 선명하게 대폭 줄입니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../unlock-pdf/" class="related-card" style="--card-accent:#16a34a" data-rel-tool="unlock-pdf"><span class="related-card-icon" style="background:#16a34a">🔓</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">PDF 비밀번호 · 잠금 해제</span><span class="related-card-badge">NEW</span></span><span class="related-card-desc">인쇄·복사 제한을 없애거나 알고 있는 비밀번호(주민번호/생년월일 등)를 입력해 암호 없는 PDF로 저장합니다.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><a href="../merge-pdf/" class="related-card" style="--card-accent:#ef4444" data-rel-tool="merge-pdf"><span class="related-card-icon" style="background:#ef4444">📑</span><span class="related-card-body"><span class="related-card-title-row"><span class="related-card-title">PDF 합치기 (병합)</span><span class="related-card-badge">POPULAR</span></span><span class="related-card-desc">여러 개의 PDF 파일을 원하는 순서로 배치하여 단 하나의 PDF 파일로 손쉽게 병합하세요.</span></span><span class="related-card-arrow">바로 쓰기 →</span></a><!-- SSR:RELATED:END --></div>
           </div>
         </div>
 
@@ -270,12 +271,12 @@
     <section class="seo-section">
       <div class="seo-card">
         <h2 id="howToTitle">💡 3단계 간단 사용 방법</h2>
-        <ul class="step-list" id="howToStepsList"><li class="step-item"><span class="step-num">1</span><span>글자를 뽑아낼 PDF 문서를 업로드하세요.</span></li><li class="step-item"><span class="step-num">2</span><span>페이지 구분과 함께 텍스트 추출을 시작하려면 [지금 변환 시작하기]를 누르세요.</span></li><li class="step-item"><span class="step-num">3</span><span>추출된 텍스트 미리보기에서 [📋 텍스트 전체 복사] 또는 [.TXT 파일 다운로드]를 이용하세요.</span></li></ul>
+        <ul class="step-list" id="howToStepsList"><!-- SSR:STEPS:START --><li class="step-item"><span class="step-num">1</span><span>글자를 뽑아낼 PDF 문서를 업로드하세요.</span></li><li class="step-item"><span class="step-num">2</span><span>페이지 구분과 함께 텍스트 추출을 시작하려면 [지금 변환 시작하기]를 누르세요.</span></li><li class="step-item"><span class="step-num">3</span><span>추출된 텍스트 미리보기에서 [📋 텍스트 전체 복사] 또는 [.TXT 파일 다운로드]를 이용하세요.</span></li><!-- SSR:STEPS:END --></ul>
       </div>
 
       <div class="seo-card">
         <h2 id="faqTitle">❓ 자주 묻는 질문 (FAQ)</h2>
-        <div class="faq-list" id="faqList"><div class="faq-item"><div class="faq-q">Q. 한글 문서나 영어 논문도 글자가 깨지지 않고 추출되나요?</div><div class="faq-a">네, UTF-8 인코딩을 사용하여 한글, 영어, 일본어, 스페인어 텍스트 모두 깨짐 없이 깔끔하게 추출됩니다.</div></div><div class="faq-item"><div class="faq-q">Q. 스캔해서 이미지로만 저장된 PDF도 텍스트가 나오나요?</div><div class="faq-a">텍스트 레이어가 없는 단순 스캔 이미지 PDF의 경우 글자 선택이 되지 않아 텍스트 추출이 제한됩니다.</div></div></div>
+        <div class="faq-list" id="faqList"><!-- SSR:FAQS:START --><div class="faq-item"><div class="faq-q">Q. 한글 문서나 영어 논문도 글자가 깨지지 않고 추출되나요?</div><div class="faq-a">네, UTF-8 인코딩을 사용하여 한글, 영어, 일본어, 스페인어 텍스트 모두 깨짐 없이 깔끔하게 추출됩니다.</div></div><div class="faq-item"><div class="faq-q">Q. 스캔해서 이미지로만 저장된 PDF도 텍스트가 나오나요?</div><div class="faq-a">텍스트 레이어가 없는 단순 스캔 이미지 PDF의 경우 글자 선택이 되지 않아 텍스트 추출이 제한됩니다.</div></div><!-- SSR:FAQS:END --></div>
       </div>
     </section>
 
@@ -329,6 +330,6 @@
   <script src="../js/converters.js?v=21e106d3"></script>
   <script src="../js/editors.js?v=46bd16c0"></script>
   <script src="../js/feedback.js?v=a73f98f1"></script>
-  <script src="../js/app.js?v=f65323e8"></script>
+  <script src="../js/app.js?v=b8a7236f"></script>
 </body>
 </html>

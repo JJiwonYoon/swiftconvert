@@ -25,6 +25,35 @@
 
   const rootUrl = computeRootUrl();
 
+  function isPlainLeftClick(e) {
+    return !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0;
+  }
+
+  function homeHref() {
+    if (isFileProtocol) {
+      return window.INITIAL_TOOL_ID ? "../index.html" : "#";
+    }
+    const cleanSearch = window.location.search
+      .replace(/([?&])tool=[^&]*(&|$)/, "$1")
+      .replace(/[?&]$/, "");
+    return rootUrl + cleanSearch;
+  }
+
+  function toolHref(toolId) {
+    if (isFileProtocol) return `#${toolId}`;
+    return `${rootUrl}${toolId}/${window.location.search}`;
+  }
+
+  function bindSpaToolLink(el, attrName) {
+    el.addEventListener("click", (e) => {
+      if (!isPlainLeftClick(e)) return;
+      const toolId = el.getAttribute(attrName);
+      if (!toolId) return;
+      e.preventDefault();
+      openTool(toolId, true);
+    });
+  }
+
   const state = {
     lang: "ko",
     category: "all",
@@ -207,6 +236,14 @@
     const kwMeta = document.querySelector('meta[name="keywords"]');
     if (kwMeta && keywords) kwMeta.setAttribute("content", keywords);
 
+    if (!isFileProtocol) {
+      const canonicalUrl = state.activeToolId ? `${rootUrl}${state.activeToolId}/` : rootUrl;
+      const canonicalEl = document.querySelector('link[rel="canonical"]');
+      if (canonicalEl) canonicalEl.setAttribute("href", canonicalUrl);
+      const ogUrlEl = document.querySelector('meta[property="og:url"]');
+      if (ogUrlEl) ogUrlEl.setAttribute("content", canonicalUrl);
+    }
+
     const stepsEl = document.getElementById("howToStepsList");
     if (stepsEl) {
       stepsEl.innerHTML = steps
@@ -293,8 +330,18 @@
     document.querySelectorAll("[data-nav-tool]").forEach((btn) => {
       const id = btn.getAttribute("data-nav-tool");
       const tool = window.TOOLS_CATALOG.find((x) => x.id === id);
-      if (tool) btn.textContent = tool.names[state.lang] || tool.names.en;
+      if (tool) {
+        btn.textContent = tool.names[state.lang] || tool.names.en;
+        if (btn.tagName === "A") {
+          btn.setAttribute("href", toolHref(id));
+        }
+      }
     });
+
+    const backBtn = document.getElementById("backToAllBtn");
+    if (backBtn && backBtn.tagName === "A") {
+      backBtn.setAttribute("href", homeHref());
+    }
 
     updateSeoAndGuide();
     renderAdSlots();
@@ -343,7 +390,7 @@
           ? `<span class="tool-badge ${badgeClass}">${tool.badge}</span>`
           : "";
         return `
-          <article class="tool-card" style="--card-accent:${tool.color}" data-tool-id="${tool.id}" tabindex="0" role="button">
+          <a href="${escapeHtml(toolHref(tool.id))}" class="tool-card" style="--card-accent:${tool.color}" data-tool-id="${tool.id}">
             <div class="tool-card-header">
               <div class="tool-icon" style="background:${tool.color}">${tool.icon}</div>
               ${badgeHtml}
@@ -353,21 +400,13 @@
             <div class="tool-card-footer">
               <span>${escapeHtml(s.useToolBtn)}</span>
             </div>
-          </article>
+          </a>
         `;
       })
       .join("");
 
     grid.querySelectorAll(".tool-card").forEach((card) => {
-      card.addEventListener("click", () => {
-        openTool(card.getAttribute("data-tool-id"), true);
-      });
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openTool(card.getAttribute("data-tool-id"), true);
-        }
-      });
+      bindSpaToolLink(card, "data-tool-id");
     });
   }
 
@@ -397,11 +436,8 @@
         const badgeHtml = rt.badge
           ? `<span class="related-card-badge">${escapeHtml(rt.badge)}</span>`
           : "";
-        const href = isFileProtocol
-          ? `#${rt.id}`
-          : `${rootUrl}${rt.id}/${window.location.search}`;
         return `
-          <a href="${escapeHtml(href)}" class="related-card" style="--card-accent:${rt.color}" data-rel-tool="${rt.id}">
+          <a href="${escapeHtml(toolHref(rt.id))}" class="related-card" style="--card-accent:${rt.color}" data-rel-tool="${rt.id}">
             <span class="related-card-icon" style="background:${rt.color}">${rt.icon}</span>
             <span class="related-card-body">
               <span class="related-card-title-row">
@@ -417,11 +453,7 @@
       .join("");
 
     pills.querySelectorAll("[data-rel-tool]").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-        e.preventDefault();
-        openTool(link.getAttribute("data-rel-tool"), true);
-      });
+      bindSpaToolLink(link, "data-rel-tool");
     });
   }
 
@@ -1356,7 +1388,7 @@
 
     // 상단 퀵 네비게이션
     document.querySelectorAll("[data-nav-tool]").forEach((btn) => {
-      btn.addEventListener("click", () => openTool(btn.getAttribute("data-nav-tool"), true));
+      bindSpaToolLink(btn, "data-nav-tool");
     });
 
     const brandLogo = document.getElementById("brandLogo");
@@ -1365,6 +1397,7 @@
         brandLogo.setAttribute("href", rootUrl);
       }
       brandLogo.addEventListener("click", (e) => {
+        if (!isPlainLeftClick(e)) return;
         e.preventDefault();
         if (isFileProtocol) {
           if (window.INITIAL_TOOL_ID) {
@@ -1376,10 +1409,7 @@
           }
           return;
         }
-        const cleanSearch = window.location.search
-          .replace(/([?&])tool=[^&]*(&|$)/, "$1")
-          .replace(/[?&]$/, "");
-        const targetUrl = rootUrl + cleanSearch;
+        const targetUrl = homeHref();
         if (window.location.href === targetUrl) {
           window.location.reload();
         } else {
@@ -1400,7 +1430,14 @@
       });
     }
 
-    document.getElementById("backToAllBtn").addEventListener("click", () => closeTool(true));
+    const backToAllBtn = document.getElementById("backToAllBtn");
+    if (backToAllBtn) {
+      backToAllBtn.addEventListener("click", (e) => {
+        if (!isPlainLeftClick(e)) return;
+        e.preventDefault();
+        closeTool(true);
+      });
+    }
 
     const shareBtn = document.getElementById("shareToolBtn");
     if (shareBtn) {
